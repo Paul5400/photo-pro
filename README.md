@@ -11,3 +11,4 @@ Ce projet contient des diagrammes collaboratifs versionnés avec Git.
 - Chaque diagramme est stocké dans un fichier séparé
 - Les modifications sont automatiquement sauvegardées
 - L'historique complet est disponible via Git
+- Le dossier `toubilib/` est disponible pour le module du même nom
