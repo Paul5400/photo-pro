@@ -1,0 +1,14 @@
+sequenceDiagram
+    participant FE as Backoffice
+    participant GW as API Gestion
+    participant GAL as Galeries
+    participant MQ as RabbitMQ
+    participant NOTIF as Notifications
+
+    FE->>GW: PATCH /galeries/{id} [JWT] {publiee: true}
+    GW->>GAL: Publier galerie
+    GAL->>GAL: Vérifier ≥1 photo
+    GAL-->>GW: 200 OK
+    GW-->>FE: 200 OK
+    GAL->>MQ: AMQP {type, client_email, url_acces, code_acces}
+    MQ->>NOTIF: Consommer → envoyer mail
