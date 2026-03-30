@@ -1,0 +1,67 @@
+erDiagram
+  Photographe {
+    uuid id PK
+    string nom
+    string pseudo UK
+    string email
+    string telephone
+    text description
+    datetime created_at
+  }
+
+  Photo {
+    uuid id PK
+    string titre
+    string mime_type
+    float taille_mo
+    string nom_fichier_original
+    string chemin_s3
+    datetime uploaded_at
+    uuid photographe_id FK
+  }
+
+  Galerie {
+    uuid id PK
+    string titre
+    text description
+    enum type
+    enum mode_mise_en_page
+    enum statut
+    datetime created_at
+    datetime published_at
+    uuid photographe_id FK
+    uuid photo_couverture_id FK
+  }
+
+  GaleriePrivee {
+    uuid id PK
+    uuid galerie_id FK
+    string nom_client
+    string email_client
+    string telephone_client
+    string code_acces UK
+    string url_acces UK
+  }
+
+  GaleriePhoto {
+    uuid galerie_id FK
+    uuid photo_id FK
+    int ordre
+    datetime added_at
+  }
+
+  Notification {
+    uuid id PK
+    uuid galerie_privee_id FK
+    enum type_evenement
+    datetime envoyee_at
+    boolean succes
+  }
+
+  Photographe ||--o{ Photo : "uploade"
+  Photographe ||--o{ Galerie : "cree"
+  Galerie ||--o| GaleriePrivee : "est etendue par"
+  Galerie ||--o{ GaleriePhoto : "contient"
+  Photo ||--o{ GaleriePhoto : "appartient a"
+  Galerie }o--o| Photo : "couverture"
+  GaleriePrivee ||--o{ Notification : "genere"
