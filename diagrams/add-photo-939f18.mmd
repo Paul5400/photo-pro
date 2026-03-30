@@ -1,0 +1,12 @@
+sequenceDiagram
+    participant FE as Backoffice
+    participant GW as API Gestion
+    participant GAL as Galeries
+
+    FE->>GW: POST /galeries/{id}/photos [JWT] {photo_id}
+    GW->>GAL: Ajouter photo
+    GAL->>GAL: Vérifier propriété photo + galerie
+    GAL-->>GW: 201 Created
+    GW-->>FE: 201 Created
+
+    
