@@ -1,0 +1,22 @@
+sequenceDiagram
+    participant FE as Backoffice Vue.js
+    participant GW as API Gestion (Gateway)
+    participant AUTH as Service Identités
+    participant GAL as Service Galeries
+
+    FE->>GW: POST /galeries<br/>Header: Bearer JWT<br/>Body: {titre, description, type, mise_en_page,<br/>[client_nom, client_email si privé]}
+    GW->>AUTH: Valider JWT
+    AUTH-->>GW: 200 OK (token valide + photographe_id)
+    GW->>GAL: Créer galerie (photographe_id + données)
+    GAL-->>GW: 201 Created {galerie_id, code_acces, url_acces}
+    GW-->>FE: 201 Created {galerie}
+
+    alt JWT invalide ou expiré
+        AUTH-->>GW: 401 Unauthorized
+        GW-->>FE: 401 Unauthorized
+    end
+    alt Données manquantes / invalides
+        GAL-->>GW: 422 Unprocessable Entity
+        GW-->>FE: 422 "Données invalides"
+    end
+    
