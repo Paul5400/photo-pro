@@ -1,9 +1,0 @@
-sequenceDiagram
-    participant User
-    participant System
-    participant Database
-
-    User->>System: Login Request
-    System->>Database: Check Credentials
-    Database-->>System: OK
-    System-->>User: Auth Token
