@@ -4,7 +4,7 @@ sequenceDiagram
     participant GAL as Galeries
     participant S3 as SeaweedFS
 
-    V->>GW: GET /galeries/{id}?code=XXXX
+    V->>GW: GET /galeries/{id}
     GW->>GAL: Vérifier code + galerie publiée
     GAL->>S3: Récupérer URLs photos
     S3-->>GAL: URLs signées
