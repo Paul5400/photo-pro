@@ -1,0 +1,31 @@
+sequenceDiagram
+    participant FE as Backoffice Vue.js
+    participant GW as API Gestion (Gateway)
+    participant AUTH as Service Identités
+    participant GAL as Service Galeries
+    participant S3 as SeaweedFS (S3)
+
+    FE->>GW: POST /photos<br/>Header: Bearer JWT<br/>Body: multipart/form-data {fichier, titre?}
+    GW->>AUTH: Valider JWT
+    AUTH-->>GW: 200 OK (photographe_id)
+    GW->>GAL: Upload photo (photographe_id + fichier)
+    GAL->>S3: Stocker fichier image
+    S3-->>GAL: URL fichier stocké
+    GAL-->>GW: 201 Created {photo_id, url, taille, type_MIME}
+    GW-->>FE: 201 Created {photo}
+
+    alt Type MIME invalide
+        GAL-->>GW: 415 Unsupported Media Type
+        GW-->>FE: 415 "Format non supporté"
+    end
+    alt Fichier trop grand
+        GAL-->>GW: 413 Payload Too Large
+        GW-->>FE: 413 "Fichier trop volumineux"
+    end
+    alt S3 indisponible
+        S3-->>GAL: Erreur connexion
+        GAL-->>GW: 503 Service Unavailable
+        GW-->>FE: 503 "Service temporairement indisponible"
+    end
+
+    
