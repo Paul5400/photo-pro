@@ -1,0 +1,12 @@
+sequenceDiagram
+    participant V as Visiteur
+    participant GW as API Navigation
+    participant GAL as Galeries
+    participant S3 as SeaweedFS
+
+    V->>GW: GET /galeries/{id}?code=XXXX
+    GW->>GAL: Vérifier code + galerie publiée
+    GAL->>S3: Récupérer URLs photos
+    S3-->>GAL: URLs signées
+    GAL-->>GW: 200 OK {galerie, photos[]}
+    GW-->>V: 200 OK
