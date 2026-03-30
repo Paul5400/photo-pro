@@ -1,0 +1,10 @@
+sequenceDiagram
+    participant V as Visiteur
+    participant GW as API Navigation
+    participant GAL as Galeries
+
+    V->>GW: POST /galeries/{id}/photos/{photoId}/commentaires {auteur?, contenu}
+    GW->>GAL: Créer commentaire
+    GAL->>GAL: Vérifier code accès + valider contenu
+    GAL-->>GW: 201 Created
+    GW-->>V: 201 Created
