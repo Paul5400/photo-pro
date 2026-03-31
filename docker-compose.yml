@@ -126,7 +126,7 @@ services:
       - photopro.net
 
   S3:
-    image: chrislusf/seaweedfs:latest
+    image: chrislusf/seaweedfs:3.77
     ports:
       - '8333:8333'
       - '9333:9333'
@@ -142,7 +142,7 @@ services:
   # Bases de données (PostgreSQL)
   # ---------------------------------------------------------
   auth.db:
-    image: 'postgres:latest'
+    image: 'postgres:17'
     env_file: ./infra/env/auth-db.env
     ports:
       - '5435:5432'
@@ -153,7 +153,7 @@ services:
       - ./infra/sql/auth.data.sql:/docker-entrypoint-initdb.d/2-data.sql
 
   gallery.db:
-    image: 'postgres:latest'
+    image: 'postgres:17'
     env_file: ./infra/env/gallery-db.env
     ports:
       - '5433:5432'
@@ -164,7 +164,7 @@ services:
       - ./infra/sql/gallery.data.sql:/docker-entrypoint-initdb.d/2-data.sql
 
   notifications.db:
-    image: 'postgres:latest'
+    image: 'postgres:17'
     env_file: ./infra/env/notifications-db.env
     ports:
       - '5434:5432'
