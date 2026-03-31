@@ -28,3 +28,4 @@ infra/rabbitmq/*
 
 infra/S3/data/*
 !infra/S3/data/.gitkeep
+infra/S3/s3.json

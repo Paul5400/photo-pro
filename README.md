@@ -8,13 +8,20 @@ cp infra/env/auth-db.env.dist infra/env/auth-db.env
 cp infra/env/gallery-db.env.dist infra/env/gallery-db.env
 cp infra/env/notifications-db.env.dist infra/env/notifications-db.env
 ```
+  (Éditez les fichiers .env pour configurer les mots de passe)
 
-2. Demarrer la stack :
+2. Creer le fichier s3.json dans infra/S3/ :
+```bash
+cp infra/S3/s3.json.dist infra/S3/s3.json
+```
+   (Éditez `infra/S3/s3.json` pour configurer vos clés S3 si nécessaire).
+
+3. Demarrer la stack :
 ```bash
 docker compose up -d
 ```
 
-## URLs locales
+### Services disponibles
 - Gateway Front : http://localhost:8080
 - Gateway Back : http://localhost:8081
 - Adminer : http://localhost:8090
