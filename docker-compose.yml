@@ -1,0 +1,185 @@
+networks:
+  photopro.net:
+    driver: bridge
+
+services:
+  gateway.frontoffice:
+    build:
+      context: build
+      dockerfile: 8.4-cli.Dockerfile
+    ports:
+      - '8080:80'
+    volumes:
+      - ./services/api-gateway-frontoffice:/var/php
+    working_dir: /var/php
+    networks:
+      - photopro.net
+    command: sh -c "composer install && php -S 0.0.0.0:80 -t /var/php/public"
+
+  gateway.backoffice:
+    build:
+      context: build
+      dockerfile: 8.4-cli.Dockerfile
+    ports:
+      - '8081:80'
+    volumes:
+      - ./services/api-gateway-backoffice:/var/php
+    working_dir: /var/php
+    networks:
+      - photopro.net
+    command: sh -c "composer install && php -S 0.0.0.0:80 -t /var/php/public"
+
+  # ---------------------------------------------------------
+  # Services Métier / APIs
+  # ---------------------------------------------------------
+  api.auth:
+    build:
+      context: build
+      dockerfile: 8.4-cli.Dockerfile
+    ports:
+      - '8082:80'
+    volumes:
+      - ./services/service-auth:/var/php
+    working_dir: /var/php
+    networks:
+      - photopro.net
+    depends_on:
+      - auth.db
+    command: sh -c "composer install && php -S 0.0.0.0:80 -t /var/php/public"
+
+  api.gallery:
+    build:
+      context: build
+      dockerfile: 8.4-cli.Dockerfile
+    ports:
+      - '8083:80'
+    volumes:
+      - ./services/service-galeries:/var/php
+    working_dir: /var/php
+    networks:
+      - photopro.net
+    depends_on:
+      - gallery.db
+      - rabbitmq
+      - S3
+    command: sh -c "composer install && php -S 0.0.0.0:80 -t /var/php/public"
+
+  api.notifications:
+    build:
+      context: build
+      dockerfile: 8.4-cli.Dockerfile
+    ports:
+      - '8084:80'
+    volumes:
+      - ./services/service-notifications:/var/php
+    working_dir: /var/php
+    networks:
+      - photopro.net
+    depends_on:
+      - notifications.db
+      - rabbitmq
+      - mailpit
+    command: sh -c "composer install && php -S 0.0.0.0:80 -t /var/php/public"
+
+  api.stockage:
+    build:
+      context: build
+      dockerfile: 8.4-cli.Dockerfile
+    ports:
+      - '8086:80'
+    volumes:
+      - ./services/service-stockage:/var/php
+    working_dir: /var/php
+    networks:
+      - photopro.net
+    depends_on:
+      - S3
+    command: sh -c "composer install && php -S 0.0.0.0:80 -t /var/php/public"
+
+  # ---------------------------------------------------------
+  # Infrastructure (Services Tiers)
+  # ---------------------------------------------------------
+  rabbitmq:
+    image: rabbitmq:4-management
+    ports:
+      - '15672:15672' # Interface d'administration web
+      - '5672:5672'   # Port AMQP
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 8s
+      timeout: 30s
+      retries: 3
+    networks:
+      - photopro.net
+    volumes:
+      - ./infra/rabbitmq:/var/lib/rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: photopro
+      RABBITMQ_DEFAULT_PASS: photopro
+
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - '1025:1025' # Port SMTP
+      - '8025:8025' # Interface Web Mailpit
+    networks:
+      - photopro.net
+
+  S3:
+    image: chrislusf/seaweedfs:latest
+    ports:
+      - '8333:8333'
+      - '9333:9333'
+      - '23646:23646'
+    command: "server -dir=/data -s3 -s3.port=8333 -s3.config=/etc/seaweedfs/s3.json"
+    networks:
+      - photopro.net
+    volumes:
+      - ./infra/S3/data:/data
+      - ./infra/S3/s3.json:/etc/seaweedfs/s3.json
+
+  # ---------------------------------------------------------
+  # Bases de données (PostgreSQL)
+  # ---------------------------------------------------------
+  auth.db:
+    image: 'postgres:latest'
+    env_file: ./infra/env/auth-db.env
+    ports:
+      - '5435:5432'
+    networks:
+      - photopro.net
+    volumes:
+      - ./infra/sql/auth.schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ./infra/sql/auth.data.sql:/docker-entrypoint-initdb.d/2-data.sql
+
+  gallery.db:
+    image: 'postgres:latest'
+    env_file: ./infra/env/gallery-db.env
+    ports:
+      - '5433:5432'
+    networks:
+      - photopro.net
+    volumes:
+      - ./infra/sql/gallery.schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ./infra/sql/gallery.data.sql:/docker-entrypoint-initdb.d/2-data.sql
+
+  notifications.db:
+    image: 'postgres:latest'
+    env_file: ./infra/env/notifications-db.env
+    ports:
+      - '5434:5432'
+    networks:
+      - photopro.net
+    volumes:
+      - ./infra/sql/notifications.schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ./infra/sql/notifications.data.sql:/docker-entrypoint-initdb.d/2-data.sql
+
+  # ---------------------------------------------------------
+  # Outils d'administration Base de données
+  # ---------------------------------------------------------
+  adminer:
+    image: adminer
+    ports:
+      - '8090:8080'
+    networks:
+      - photopro.net

@@ -1,5 +1,4 @@
 {
-
   "require" : {
     "php": ">=8.2",
     "slim/slim": "^4.14",
@@ -21,9 +20,9 @@
   },
   "autoload": {
     "psr-4" : {
-      "toubilib\\api\\" : "./src/api",
-      "toubilib\\core\\" : "./src/application_core",
-      "toubilib\\infra\\" : "./src/infrastructure"
+      "photopro\\frontoffice\\api\\" : "./src/api",
+      "photopro\\frontoffice\\core\\" : "./src/application_core",
+      "photopro\\frontoffice\\infra\\" : "./src/infrastructure"
     }
   }
 }
