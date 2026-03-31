@@ -1,0 +1,24 @@
+{
+  "identities": [
+    {
+      "name": "admin",
+      "actions": ["Read", "Write", "List", "Admin"],
+      "credentials": [
+        {
+          "accessKey": "REPLACE_ME_ACCESS_KEY",
+          "secretKey": "REPLACE_ME_SECRET_KEY"
+        }
+      ]
+    },
+    {
+      "name": "marcel",
+      "actions": ["Read", "Write", "List"],
+      "credentials": [
+        {
+          "accessKey": "REPLACE_ME_MARCEL_KEY",
+          "secretKey": "REPLACE_ME_MARCEL_SECRET"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "identities": [
+    {
+      "name": "admin",
+      "actions": ["Read", "Write", "List", "Admin"],
+      "credentials": [
+        {
+          "accessKey": "ABCDEF",
+          "secretKey": "123456"
+        }
+      ]
+    },
+    {
+      "name": "marcel",
+      "actions": ["Read", "Write", "List"],
+      "credentials": [
+        {
+          "accessKey": "GHIJKL",
+          "secretKey": "789012"
+        }
+      ]
+    }
+  ]
+}
