@@ -3,6 +3,7 @@
     "php": ">=8.4",
     "slim/slim": "^4.14",
     "slim/psr7": "^1.7",
+    "aws/aws-sdk-php": "^3.0",
     "ramsey/uuid": "^4.7",
     "firebase/php-jwt": "^6.11.1",
     "monolog/monolog": "^3.7",
@@ -22,7 +23,7 @@
     "psr-4" : {
       "photopro\\stockage\\api\\" : "./src/api",
       "photopro\\stockage\\core\\" : "./src/application_core",
-      "photopro\\stockage\\infra\\" : "./src/infrastructure"
+      "photopro\\stockage\\infrastructure\\" : "./src/infrastructure"
     }
   }
 }
