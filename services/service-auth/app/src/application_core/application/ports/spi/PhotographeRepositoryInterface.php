@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace photopro\auth\core\application\ports;
+namespace photopro\auth\core\application\ports\spi;
 
-use photopro\auth\core\domain\entities\photographe\Photographe;
+use photopro\auth\core\domain\entities\Photographe;
 
 interface PhotographeRepositoryInterface
 {

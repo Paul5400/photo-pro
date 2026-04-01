@@ -5,8 +5,8 @@ namespace photopro\auth\infra\repositories;
 
 use PDO;
 use Ramsey\Uuid\Uuid;
-use photopro\auth\core\domain\entities\photographe\Photographe;
-use photopro\auth\core\application\ports\PhotographeRepositoryInterface;
+use photopro\auth\core\domain\entities\Photographe;
+use photopro\auth\core\application\ports\spi\PhotographeRepositoryInterface;
 
 class PDOPhotographeRepository implements PhotographeRepositoryInterface
 {

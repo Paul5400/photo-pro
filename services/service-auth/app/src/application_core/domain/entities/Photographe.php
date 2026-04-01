@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace photopro\auth\core\domain\entities\photographe;
+namespace photopro\auth\core\domain\entities;
 
 class Photographe
 {
@@ -11,7 +11,7 @@ class Photographe
     public string $email;
     public ?string $telephone;
     public ?string $description;
-    public string $created_at;
+    public ?string $created_at;
 
     public function __construct(
         $id = null,
