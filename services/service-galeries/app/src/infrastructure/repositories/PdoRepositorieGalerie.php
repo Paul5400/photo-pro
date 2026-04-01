@@ -88,5 +88,65 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
         $statement = $this->pdo->prepare('DELETE FROM galerie_photo WHERE photo_id = :id');
         $statement->execute([':id' => $id]);
     }
+
+    public function getGalleryPreview(string $galleryId, string $userId): array
+    {
+        $statement = $this->pdo->prepare(
+            'SELECT 
+                g.id AS galerie_id,
+                g.titre,
+                g.description,
+                g.type,
+                g.statut,
+                g.mode_mise_en_page,
+                g.created_at,
+                g.published_at,
+                p.id AS photo_id,
+                p.url,
+                p.titre AS photo_titre
+            FROM galerie g
+            LEFT JOIN galerie_photo gp ON g.id = gp.galerie_id
+            LEFT JOIN photo p ON gp.photo_id = p.id
+            WHERE g.id = :gallery_id 
+            AND g.photographe_id = :user_id
+            ORDER BY gp.ordre ASC'
+        );
+
+        $statement->execute([
+            ':gallery_id' => $galleryId,
+            ':user_id' => $userId
+        ]);
+
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function publishGallery(string $galleryId, string $userId): void
+    {
+        $statement = $this->pdo->prepare(
+            'SELECT COUNT(*) FROM galerie_photo WHERE galerie_id = :id'
+        );
+        $statement->execute([':id' => $galleryId]);
+        $count = $statement->fetchColumn();
+
+        if ($count == 0) {
+            throw new \Exception("Impossible de publier une galerie vide");
+        }
+
+        $statement = $this->pdo->prepare(
+            'UPDATE galerie 
+            SET statut = :statut, published_at = NOW()
+            WHERE id = :id AND photographe_id = :user_id'
+        );
+
+        $statement->execute([
+            ':statut' => 'publie',
+            ':id' => $galleryId,
+            ':user_id' => $userId
+        ]);
+
+        if ($statement->rowCount() === 0) {
+            throw new \Exception("Galerie non trouvée ou non autorisée");
+        }
+    }
 }
 
