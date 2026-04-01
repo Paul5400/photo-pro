@@ -15,4 +15,6 @@ interface JwtManagerInterface
     public function createPayload(Photographe $photographe): array;
 
     public function createRefreshPayload(Photographe $photographe): array;
+
+    public function createVisiteurPayload(string $galerieId): array;
 }

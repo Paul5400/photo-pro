@@ -15,4 +15,6 @@ interface AuthProviderInterface
     public function generateRefreshToken(Photographe $photographe): string;
 
     public function validateToken(string $token): ?array;
+
+    public function generateVisiteurToken(string $galerieId): string;
 }

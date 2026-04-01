@@ -14,6 +14,14 @@ return [
             'password' => $_ENV['DB_PASSWORD'] ?? 'secret',
         ],
 
+        'gallery_database' => [
+            'driver'   => $_ENV['GALLERY_DB_DRIVER']   ?? 'pgsql',
+            'host'     => $_ENV['GALLERY_DB_HOST']     ?? 'gallery.db',
+            'database' => $_ENV['GALLERY_DB_NAME']     ?? 'gallery_db',
+            'username' => $_ENV['GALLERY_DB_USER']     ?? 'photo_gallery',
+            'password' => $_ENV['GALLERY_DB_PASSWORD'] ?? 'secret',
+        ],
+
         'jwt' => [
             'secret' => $_ENV['JWT_SECRET'] ?? '',
         ],

@@ -52,4 +52,10 @@ class JWTAuthProvider implements AuthProviderInterface
     {
         return $this->jwtManager->decode($token);
     }
+
+    public function generateVisiteurToken(string $galerieId): string
+    {
+        $payload = $this->jwtManager->createVisiteurPayload($galerieId);
+        return $this->jwtManager->encode($payload);
+    }
 }

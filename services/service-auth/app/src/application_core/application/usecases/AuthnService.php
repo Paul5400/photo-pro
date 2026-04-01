@@ -7,20 +7,25 @@ namespace photopro\auth\core\application\usecases;
 use photopro\auth\core\application\ports\api\AuthnServiceInterface;
 use photopro\auth\core\application\dto\LoginDTO;
 use photopro\auth\core\application\dto\CreatePhotographeDTO;
+use photopro\auth\core\application\dto\ConnexionVisiteurDTO;
 use photopro\auth\core\application\ports\spi\PhotographeRepositoryInterface;
+use photopro\auth\core\application\ports\spi\GaleriePriveeRepositoryInterface;
 use photopro\auth\core\application\ports\api\provider\AuthProviderInterface;
 use photopro\auth\core\domain\entities\Photographe;
 
 class AuthnService implements AuthnServiceInterface
 {
     private PhotographeRepositoryInterface $photographeRepository;
+    private GaleriePriveeRepositoryInterface $galeriePriveeRepository;
     private AuthProviderInterface $authProvider;
 
     public function __construct(
         PhotographeRepositoryInterface $photographeRepository,
+        GaleriePriveeRepositoryInterface $galeriePriveeRepository,
         AuthProviderInterface $authProvider
     ) {
         $this->photographeRepository = $photographeRepository;
+        $this->galeriePriveeRepository = $galeriePriveeRepository;
         $this->authProvider = $authProvider;
     }
 
@@ -79,6 +84,25 @@ class AuthnService implements AuthnServiceInterface
                 'pseudo' => $photographe->pseudo,
                 'email' => $photographe->email,
             ],
+        ];
+    }
+
+    public function loginVisiteur(ConnexionVisiteurDTO $dto): array
+    {
+        $galeriePrivee = $this->galeriePriveeRepository->findByUrlAndCode(
+            $dto->url_acces,
+            $dto->code_acces
+        );
+
+        if (!$galeriePrivee) {
+            throw new \Exception('Code ou URL invalide', 401);
+        }
+
+        $token = $this->authProvider->generateVisiteurToken($galeriePrivee['galerie_id']);
+
+        return [
+            'token' => $token,
+            'galerie_id' => $galeriePrivee['galerie_id'],
         ];
     }
 }

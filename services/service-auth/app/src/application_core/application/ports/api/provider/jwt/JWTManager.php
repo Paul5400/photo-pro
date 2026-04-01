@@ -44,6 +44,7 @@ class JWTManager implements JwtManagerInterface
             'iat' => $now,
             'exp' => $now + ($this->expirationDays * 24 * 60 * 60),
             'sub' => $photographe->id,
+            'role' => 'photographe',
             'user' => [
                 'id' => $photographe->id,
                 'pseudo' => $photographe->pseudo,
@@ -61,7 +62,22 @@ class JWTManager implements JwtManagerInterface
             'iat' => $now,
             'exp' => $now + ($this->refreshExpirationDays * 24 * 60 * 60),
             'sub' => $photographe->id,
+            'role' => 'photographe',
             'type' => 'refresh',
+        ];
+    }
+
+    public function createVisiteurPayload(string $galerieId): array
+    {
+        $now = time();
+
+        return [
+            'iss' => 'photopro-auth',
+            'iat' => $now,
+            'exp' => $now + ($this->expirationDays * 24 * 60 * 60),
+            'sub' => 'visiteur',
+            'role' => 'visiteur',
+            'galerie_id' => $galerieId,
         ];
     }
 }
