@@ -1,6 +1,6 @@
 <?php
 
-namespace photopro\auth\api\actions\photographe;
+namespace photopro\auth\api\actions\auth;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -24,6 +24,7 @@ class CreatePhotographeAction
             $body['nom'] ?? '',
             $body['pseudo'] ?? '',
             $body['email'] ?? '',
+            $body['password'] ?? '',
             $body['telephone'] ?? null,
             $body['description'] ?? null
         );
@@ -35,6 +36,7 @@ class CreatePhotographeAction
             'nom'         => $photographe->nom,
             'pseudo'      => $photographe->pseudo,
             'email'       => $photographe->email,
+            'password'    => $photographe->password,
             'telephone'   => $photographe->telephone,
             'description' => $photographe->description,
         ]));

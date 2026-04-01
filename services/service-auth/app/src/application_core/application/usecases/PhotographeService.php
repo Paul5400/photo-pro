@@ -37,6 +37,7 @@ class PhotographeService implements PhotographeServiceInterface
             nom: $dto->nom,
             pseudo: $dto->pseudo,
             email: $dto->email,
+            password: $dto->password,
             telephone: $dto->telephone,
             description: $dto->description,
             created_at: null

@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS photographe (
     nom          VARCHAR(255) NOT NULL,
     pseudo       VARCHAR(100) NOT NULL,
     email        VARCHAR(255) NOT NULL,
+    password     VARCHAR(255) NOT NULL,
     telephone    VARCHAR(50),
     description  VARCHAR(255),
     created_at   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,

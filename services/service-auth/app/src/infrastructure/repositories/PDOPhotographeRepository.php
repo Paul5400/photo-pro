@@ -20,7 +20,7 @@ class PDOPhotographeRepository implements PhotographeRepositoryInterface
     public function findAll(): array
     {
         $stmt = $this->pdo->query('
-            SELECT id, nom, pseudo, email, telephone, description, created_at
+            SELECT id, nom, pseudo, email, password, telephone, description, created_at
             FROM photographe
             ORDER BY created_at DESC
         ');
@@ -30,7 +30,7 @@ class PDOPhotographeRepository implements PhotographeRepositoryInterface
     public function findById(string $id): ?Photographe
     {
         $stmt = $this->pdo->prepare('
-            SELECT id, nom, pseudo, email, telephone, description, created_at
+            SELECT id, nom, pseudo, email, password, telephone, description, created_at
             FROM photographe
             WHERE id = ?
         ');
@@ -47,9 +47,9 @@ class PDOPhotographeRepository implements PhotographeRepositoryInterface
         $now = date('Y-m-d H:i:s');
 
         $stmt = $this->pdo->prepare('
-            INSERT INTO photographe (id, nom, pseudo, email, telephone, description, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-            RETURNING id, nom, pseudo, email, telephone, description, created_at
+            INSERT INTO photographe (id, nom, pseudo, email, password, telephone, description, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            RETURNING id, nom, pseudo, email, password, telephone, description, created_at
         ');
 
         $stmt->execute([
@@ -57,6 +57,7 @@ class PDOPhotographeRepository implements PhotographeRepositoryInterface
             $photographe->nom,
             $photographe->pseudo,
             $photographe->email,
+            $photographe->password,
             $photographe->telephone,
             $photographe->description,
             $now,

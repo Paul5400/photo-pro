@@ -1,6 +1,6 @@
 <?php
 
-namespace photopro\auth\api\actions\photographe;
+namespace photopro\auth\api\actions\auth;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -20,7 +20,7 @@ class GetPhotographeByIdAction
         $photographe = $this->service->getPhotographeById($args['id']);
 
         if ($photographe === null) {
-            $response->getBody()->write(json_encode(['error' => 'Photographe non trouvÃ©']));
+            $response->getBody()->write(json_encode(['error' => 'Photographe non trouvé']));
             return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
         }
 
@@ -29,6 +29,7 @@ class GetPhotographeByIdAction
             'nom'         => $photographe->nom,
             'pseudo'      => $photographe->pseudo,
             'email'       => $photographe->email,
+            'password'    => $photographe->password,
             'telephone'   => $photographe->telephone,
             'description' => $photographe->description,
             'created_at'  => $photographe->created_at,
