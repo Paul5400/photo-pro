@@ -13,8 +13,13 @@ class DeletePhotoFromGalerieAction
 
     public function __invoke($request, $response, $args)
     {
-        $galerieId = $args['galerieId'];
-        $photoId = $args['photoId'];
+        $galerieId = $args['id'] ?? $args['galerieId'] ?? null;
+        $photoId = $args['photoId'] ?? null;
+
+        if (empty($galerieId) || empty($photoId)) {
+            $response->getBody()->write(json_encode(['error' => 'galerie id and photoId are required']));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
+        }
 
         try {
             $this->galerieService->deletePhotoFromGalerie($galerieId, $photoId);

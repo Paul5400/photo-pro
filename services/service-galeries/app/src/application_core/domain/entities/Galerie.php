@@ -1,6 +1,7 @@
 <?php
 namespace photopro\galeries\core\domain\entities;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use InvalidArgumentException;
 
 class Galerie
@@ -28,7 +29,7 @@ class Galerie
         self::STATUT_PUBLIE,
     ];
 
-    private Uuid $id;
+    private UuidInterface $id;
     private string $titre;
     private ?string $description;
     private string $type;
@@ -36,11 +37,11 @@ class Galerie
     private string $statut;
     private \datetime $created_at;
     private ?\datetime $published_at;
-    private Uuid $photographe_id;
-    private ?Uuid $photo_couverture_id;
+    private UuidInterface $photographe_id;
+    private ?UuidInterface $photo_couverture_id;
 
     public function __construct(
-        Uuid $id,
+        UuidInterface|Uuid $id,
         string $titre,
         ?string $description,
         string $type,
@@ -48,8 +49,8 @@ class Galerie
         string $statut,
         \datetime $created_at,
         ?\datetime $published_at,
-        Uuid $photographe_id,
-        ?Uuid $photo_couverture_id
+        UuidInterface|Uuid $photographe_id,
+        UuidInterface|Uuid|null $photo_couverture_id
     ) {
         self::assertTypeIsValid($type);
         self::assertModeIsValid($mode_mise_en_page);
@@ -89,7 +90,7 @@ class Galerie
     }
 
     // Getters
-    public function getId(): Uuid
+    public function getId(): UuidInterface
     {
         return $this->id;
     }
@@ -129,12 +130,12 @@ class Galerie
         return $this->published_at;
     }
 
-    public function getPhotographeId(): Uuid
+    public function getPhotographeId(): UuidInterface
     {
         return $this->photographe_id;
     }
 
-    public function getPhotoCouvertureId(): ?Uuid
+    public function getPhotoCouvertureId(): ?UuidInterface
     {
         return $this->photo_couverture_id;
     }

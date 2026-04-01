@@ -1,17 +1,17 @@
 <?php
 namespace photopro\galeries\core\domain\entities;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use DateTime;
 class   GaleriePhoto {
     
-    private Uuid $galerie_id;
-    private Uuid $photo_id;
+    private UuidInterface $galerie_id;
+    private UuidInterface $photo_id;
     private int $ordre;
     private DateTime $added_at;
 
     public function __construct(
-        Uuid $galerie_id,
-        Uuid $photo_id,
+        UuidInterface $galerie_id,
+        UuidInterface $photo_id,
         int $ordre,
         DateTime $added_at
     ) {
@@ -22,12 +22,12 @@ class   GaleriePhoto {
     }
 
     // Getters
-    public function getGalerieId(): Uuid
+    public function getGalerieId(): UuidInterface
     {
         return $this->galerie_id;
     }
 
-    public function getPhotoId(): Uuid
+    public function getPhotoId(): UuidInterface
     {
         return $this->photo_id;
     }
