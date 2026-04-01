@@ -6,12 +6,12 @@ namespace photopro\auth\api\actions\auth;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use photopro\auth\core\application\dto\LoginDTO;
-use photopro\auth\core\application\ports\api\AuthServiceInterface;
+use photopro\auth\core\application\ports\api\AuthnServiceInterface;
 
 class PhotographeLoginAction
 {
     public function __construct(
-        private AuthServiceInterface $authService
+        private AuthnServiceInterface $authService
     ) {}
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
