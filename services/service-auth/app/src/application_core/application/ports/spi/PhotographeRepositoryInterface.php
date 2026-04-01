@@ -8,10 +8,10 @@ use photopro\auth\core\domain\entities\Photographe;
 interface PhotographeRepositoryInterface
 {
     public function findAll(): array;
-    
+
     public function findById(string $id): ?Photographe;
-        
+
+    public function findByEmail(string $email): ?Photographe;
+
     public function create(Photographe $photographe): Photographe;
-    
-    
 }

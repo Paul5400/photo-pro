@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace photopro\auth\core\application\dto;
@@ -28,5 +29,3 @@ class CreatePhotographeDTO
         $this->description = $description;
     }
 }
-
-

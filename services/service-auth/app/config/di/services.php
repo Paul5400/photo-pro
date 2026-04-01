@@ -1,9 +1,15 @@
 <?php
 
-use photopro\auth\core\application\ports\PhotographeRepositoryInterface;
-use photopro\auth\infra\repositories\PDOPhotographeRepository;
 use photopro\auth\core\application\ports\api\PhotographeServiceInterface;
+use photopro\auth\core\application\ports\api\AuthnServiceInterface;
+use photopro\auth\core\application\ports\spi\PhotographeRepositoryInterface;
+use photopro\auth\infra\repositories\PDOPhotographeRepository;
 use photopro\auth\core\application\usecases\PhotographeService;
+use photopro\auth\core\application\usecases\AuthnService;
+use photopro\auth\core\application\ports\api\provider\AuthProviderInterface;
+use photopro\auth\core\application\ports\api\provider\jwt\JwtManagerInterface;
+use photopro\auth\core\application\ports\api\provider\jwt\JWTManager;
+use photopro\auth\core\application\ports\api\provider\jwt\JWTAuthProvider;
 
 return [
     'pdo' => function ($c): \PDO {
@@ -21,5 +27,23 @@ return [
 
     PhotographeServiceInterface::class => function ($c) {
         return new PhotographeService($c->get(PhotographeRepositoryInterface::class));
+    },
+
+    JwtManagerInterface::class => function ($c) {
+        return new JWTManager($c->get('settings')['jwt']['secret']);
+    },
+
+    AuthProviderInterface::class => function ($c) {
+        return new JWTAuthProvider(
+            $c->get(PhotographeRepositoryInterface::class),
+            $c->get(JwtManagerInterface::class)
+        );
+    },
+
+    AuthnServiceInterface::class => function ($c) {
+        return new AuthnService(
+            $c->get(PhotographeRepositoryInterface::class),
+            $c->get(AuthProviderInterface::class)
+        );
     },
 ];

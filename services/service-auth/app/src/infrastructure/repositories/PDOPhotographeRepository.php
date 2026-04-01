@@ -40,9 +40,21 @@ class PDOPhotographeRepository implements PhotographeRepositoryInterface
         return $result ?: null;
     }
 
+    public function findByEmail(string $email): ?Photographe
+    {
+        $stmt = $this->pdo->prepare('
+            SELECT id, nom, pseudo, email, password, telephone, description, created_at
+            FROM photographe
+            WHERE email = ?
+        ');
+        $stmt->execute([$email]);
+        $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, Photographe::class);
+        $result = $stmt->fetch();
+        return $result ?: null;
+    }
+
     public function create(Photographe $photographe): Photographe
     {
-
         $id = Uuid::uuid4()->toString();
         $now = date('Y-m-d H:i:s');
 
