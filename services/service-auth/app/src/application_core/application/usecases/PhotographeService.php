@@ -1,42 +1,47 @@
 <?php
 
+declare(strict_types=1);
+
 namespace photopro\auth\core\application\usecases;
 
 use photopro\auth\core\application\dto\CreatePhotographeDTO;
+use photopro\auth\core\application\ports\spi\PhotographeRepositoryInterface;
+use photopro\auth\core\domain\entities\Photographe;
 use photopro\auth\core\application\ports\api\PhotographeServiceInterface;
-use photopro\auth\core\application\ports\PhotographeRepositoryInterface;
-use photopro\auth\core\domain\entities\photographe\Photographe;
 
 class PhotographeService implements PhotographeServiceInterface
 {
-    private PhotographeRepositoryInterface $repository;
+    private PhotographeRepositoryInterface $photographeRepository;
 
-    public function __construct(PhotographeRepositoryInterface $repository)
-    {
-        $this->repository = $repository;
+    public function __construct(
+        PhotographeRepositoryInterface $photographeRepository
+    ) {
+        $this->photographeRepository = $photographeRepository;
     }
 
-    public function create(CreatePhotographeDTO $dto): Photographe
+    public function getAllPhotographes(): array
     {
+        return $this->photographeRepository->findAll();
+    }
+
+    public function getPhotographeById(string $id): ?Photographe
+    {
+        return $this->photographeRepository->findById($id);
+    }
+
+    public function createPhotographe(CreatePhotographeDTO $dto): Photographe
+    {
+
         $photographe = new Photographe(
-            null,
-            $dto->nom,
-            $dto->pseudo,
-            $dto->email,
-            $dto->telephone,
-            $dto->description
+            id: '',
+            nom: $dto->nom,
+            pseudo: $dto->pseudo,
+            email: $dto->email,
+            telephone: $dto->telephone,
+            description: $dto->description,
+            created_at: null
         );
 
-        return $this->repository->create($photographe);
-    }
-
-    public function getAll(): array
-    {
-        return $this->repository->findAll();
-    }
-
-    public function getById(string $id): ?Photographe
-    {
-        return $this->repository->findById($id);
+        return $this->photographeRepository->create($photographe);
     }
 }
