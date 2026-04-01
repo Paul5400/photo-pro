@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace photopro\auth\api\provider\jwt;
+namespace photopro\auth\core\application\ports\api\provider\jwt;
 
-use photopro\auth\api\provider\AuthProviderInterface;
+use photopro\auth\core\application\ports\api\provider\AuthProviderInterface;
 use photopro\auth\core\application\ports\spi\PhotographeRepositoryInterface;
 use photopro\auth\core\domain\entities\Photographe;
 

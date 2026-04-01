@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace photopro\auth\api\middlewares;
 
-use photopro\auth\api\provider\AuthProviderInterface;
+use photopro\auth\core\application\ports\api\provider\AuthProviderInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;

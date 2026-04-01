@@ -6,10 +6,10 @@ use photopro\auth\core\application\ports\spi\PhotographeRepositoryInterface;
 use photopro\auth\infra\repositories\PDOPhotographeRepository;
 use photopro\auth\core\application\usecases\PhotographeService;
 use photopro\auth\core\application\usecases\AuthnService;
-use photopro\auth\api\provider\AuthProviderInterface;
-use photopro\auth\api\provider\jwt\JwtManagerInterface;
-use photopro\auth\api\provider\jwt\JWTManager;
-use photopro\auth\api\provider\jwt\JWTAuthProvider;
+use photopro\auth\core\application\ports\api\provider\AuthProviderInterface;
+use photopro\auth\core\application\ports\api\provider\jwt\JwtManagerInterface;
+use photopro\auth\core\application\ports\api\provider\jwt\JWTManager;
+use photopro\auth\core\application\ports\api\provider\jwt\JWTAuthProvider;
 
 return [
     'pdo' => function ($c): \PDO {

@@ -8,7 +8,7 @@ use photopro\auth\core\application\ports\api\AuthnServiceInterface;
 use photopro\auth\core\application\dto\LoginDTO;
 use photopro\auth\core\application\dto\CreatePhotographeDTO;
 use photopro\auth\core\application\ports\spi\PhotographeRepositoryInterface;
-use photopro\auth\api\provider\AuthProviderInterface;
+use photopro\auth\core\application\ports\api\provider\AuthProviderInterface;
 use photopro\auth\core\domain\entities\Photographe;
 
 class AuthnService implements AuthnServiceInterface

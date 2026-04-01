@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace photopro\auth\api\provider;
+namespace photopro\auth\core\application\ports\api\provider;
 
 use photopro\auth\core\domain\entities\Photographe;
 
