@@ -1,17 +1,17 @@
 <?php
 namespace photopro\galeries\core\domain\entities;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
   class GaleriePrivee {
-    private Uuid $id;
-    private Uuid $galerie_id;
+    private UuidInterface $id;
+    private UuidInterface $galerie_id;
     private string $nom_client;
     private string $email_client;
     private string $telephone_client;
     private string $code_acces;
     private string $url_acces;
     public function __construct(
-        Uuid $id,
-        Uuid $galerie_id,
+        UuidInterface $id,
+        UuidInterface $galerie_id,
         string $nom_client,
         string $email_client,
         string $telephone_client,
@@ -27,11 +27,11 @@ use Ramsey\Uuid\Uuid;
         $this->url_acces = $url_acces;
     }
     // Getters
-    public function getId(): Uuid
+    public function getId(): UuidInterface
     {
         return $this->id;
     }
-    public function getGalerieId(): Uuid
+    public function getGalerieId(): UuidInterface
     {
         return $this->galerie_id;
     }
