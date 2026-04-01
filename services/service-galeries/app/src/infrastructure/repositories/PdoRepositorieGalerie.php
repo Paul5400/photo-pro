@@ -83,10 +83,10 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
         ]);
     }
 
-    public function deletePhotoFromGalerie(string $id): void
+    public function deletePhotoFromGalerie(string $photoId,string $galerieId): void
     {
-        $statement = $this->pdo->prepare('DELETE FROM galerie_photo WHERE photo_id = :id');
-        $statement->execute([':id' => $id]);
+        $statement = $this->pdo->prepare('DELETE FROM galerie_photo WHERE photo_id = :photo_id AND galerie_id = :galerie_id');
+        $statement->execute([':photo_id' => $photoId, ':galerie_id' => $galerieId]);
     }
 }
 

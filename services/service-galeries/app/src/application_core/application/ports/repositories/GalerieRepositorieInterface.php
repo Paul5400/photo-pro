@@ -10,5 +10,5 @@ interface GalerieRepositoryInterface
 
     public function addPhotoToGalerie(GaleriePhoto $galeriePhoto): void;
 
-    public function deletePhotoFromGalerie(string $id): void;
+    public function deletePhotoFromGalerie(string $photoId, string $galerieId): void;
 }
