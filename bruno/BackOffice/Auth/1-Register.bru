@@ -1,0 +1,22 @@
+meta {
+  name: 1-Register
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8081/auth/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nom": "Photographe Test",
+    "pseudo": "phototest",
+    "email": "photographe@photopro.net",
+    "password": "password123",
+    "telephone": "0102030405",
+    "description": "Un photographe de test"
+  }
+}

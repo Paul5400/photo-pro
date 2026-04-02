@@ -15,7 +15,7 @@ services:
     networks:
       - photopro.net
     environment:
-      - MOCK_MODE=true
+      - MOCK_MODE=false
       - AUTH_URL=http://api.auth:80
       - GALLERY_URL=http://api.gallery:80
     command: sh -c "composer install && php -S 0.0.0.0:80 -t /var/php/public"
@@ -32,7 +32,7 @@ services:
     networks:
       - photopro.net
     environment:
-      - MOCK_MODE=true
+      - MOCK_MODE=false
       - AUTH_URL=http://api.auth:80
       - GALLERY_URL=http://api.gallery:80
       - STOCKAGE_URL=http://api.stockage:80

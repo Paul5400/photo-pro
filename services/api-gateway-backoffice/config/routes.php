@@ -16,8 +16,9 @@ return function (App $app) {
     
     // ----- ROUTES AUTHENTIFICATION (Publiques) -----
     $app->post('/auth/register[/]', ProxyAction::class);
-    $app->post('/auth/signin[/]', ProxyAction::class);
-    $app->post('/auth/refresh[/]', ProxyAction::class);
+    $app->post('/auth/signin[/]', ProxyAction::class); // Alias pour login
+    $app->post('/auth/login/photographe[/]', ProxyAction::class);
+    $app->post('/auth/login/visiteur[/]', ProxyAction::class);
 
     // ----- ROUTES PROTEGEES (JWT Requis) -----
     $app->group('', function ($group) {
@@ -34,8 +35,5 @@ return function (App $app) {
         $group->post('/stockage[/]', ProxyAction::class);
         $group->delete('/stockage/{id}[/]', ProxyAction::class);
         
-        // Profil
-        $group->get('/profil[/]', ProxyAction::class);
-        $group->put('/profil[/]', ProxyAction::class);
     })->add(new JwtAuthMiddleware());
 };
