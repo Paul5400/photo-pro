@@ -5,24 +5,32 @@ declare(strict_types=1);
 use DI\ContainerBuilder;
 use Psr\Container\ContainerInterface;
 use GuzzleHttp\Client;
+use photopro\frontoffice\api\actions\ProxyAction;
 
 return function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
+        // --- CONFIGURATION GATEWAY ---
+        'gateway.mock_mode' => (getenv('MOCK_MODE') === 'true'),
+        
+        // --- SERVICES / ACTIONS ---
+        ProxyAction::class => function (ContainerInterface $c) {
+            return new ProxyAction($c, $c->get('gateway.mock_mode'));
+        },
+
         // Client HTTP Guzzle pour le service Galerie
         'gallery.client' => function (ContainerInterface $c) {
             return new Client([
-                'base_uri' => 'http://api.gallery:80',
+                'base_uri' => getenv('GALLERY_URL'),
                 'timeout' => 5.0,
             ]);
         },
         
         // Client HTTP Guzzle pour le service d'Authentification
-        // 'auth.client' => function (ContainerInterface $c) {
-        //     return new Client([
-        //         'base_uri' => 'http://api.auth:80',
-        //         'timeout' => 5.0,
-        //     ]);
-        // },
-
+        'auth.client' => function (ContainerInterface $c) {
+            return new Client([
+                'base_uri' => getenv('AUTH_URL'),
+                'timeout' => 5.0,
+            ]);
+        },
     ]);
 };
