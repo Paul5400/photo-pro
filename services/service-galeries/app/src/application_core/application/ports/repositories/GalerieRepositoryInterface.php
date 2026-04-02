@@ -13,4 +13,8 @@ interface GalerieRepositoryInterface
     public function deletePhotoFromGalerie(string $photoId, string $galerieId): void;
 
     public function getGalleryPreview(string $galleryId, string $userId): array;
+
+    public function publishGallery(string $galleryId, string $userId): void;
+
+    public function unpublishGallery(string $galleryId, string $userId): void;
 }

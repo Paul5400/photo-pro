@@ -1,8 +1,11 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use app\src\application_core\application\usecases\PublishGalerieUseCase;
-use app\src\application_core\application\ports\repositories\GalerieRepositoryInterface;
+use photopro\galeries\core\application\usecases\PublishGalerieUseCase;
+use photopro\galeries\core\application\ports\repositories\GalerieRepositoryInterface;
+
+require_once __DIR__ . '/../../../app/src/application_core/application/ports/repositories/GalerieRepositoryInterface.php';
+require_once __DIR__ . '/../../../app/src/application_core/application/usecases/PublishGalerieUseCase.php';
 
 class PublishGalerieUseCaseTest extends TestCase
 {

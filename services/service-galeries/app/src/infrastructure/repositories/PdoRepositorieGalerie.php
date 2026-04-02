@@ -148,5 +148,24 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
             throw new \Exception("Galerie non trouvée ou non autorisée");
         }
     }
+
+    public function unpublishGallery(string $galleryId, string $userId): void
+    {
+        $statement = $this->pdo->prepare(
+            'UPDATE galerie
+            SET statut = :statut, published_at = NULL
+            WHERE id = :id AND photographe_id = :user_id'
+        );
+
+        $statement->execute([
+            ':statut' => 'brouillon',
+            ':id' => $galleryId,
+            ':user_id' => $userId
+        ]);
+
+        if ($statement->rowCount() === 0) {
+            throw new \Exception("Galerie non trouvée ou non autorisée");
+        }
+    }
 }
 

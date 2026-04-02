@@ -1,8 +1,8 @@
 <?php
 
-namespace app\src\application_core\application\usecases;
+namespace photopro\galeries\core\application\usecases;
 
-use app\src\application_core\application\ports\repositories\GalerieRepositoryInterface;
+use photopro\galeries\core\application\ports\repositories\GalerieRepositoryInterface;
 
 class UnpublishGalerieUseCase
 {
