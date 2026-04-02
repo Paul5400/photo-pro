@@ -12,7 +12,9 @@
     "respect/validation": "^2.3.7",
     "zircote/swagger-php": "^4.11.0",
     "ext-pdo": "*",
-    "vlucas/phpdotenv": "^5.5"
+    "vlucas/phpdotenv": "^5.5",
+    "php-amqplib/php-amqplib": "^3.7",
+    "symfony/mailer": "^7.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^11.0",
@@ -20,9 +22,8 @@
   },
   "autoload": {
     "psr-4" : {
-      "photopro\\notifications\\api\\" : "./src/api",
-      "photopro\\notifications\\core\\" : "./src/application_core",
-      "photopro\\notifications\\infra\\" : "./src/infrastructure"
+      "photopro\\notifications\\core\\" : "./app/src/application_core",
+      "photopro\\notifications\\infra\\" : "./app/src/infrastructure"
     }
   }
 }
