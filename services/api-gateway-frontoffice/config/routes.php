@@ -14,6 +14,8 @@ return function (App $app) {
     });
     
     // ----- ROUTES FRONTOFFICE (Visiteurs) -----
+    $app->post('/auth/login/visiteur[/]', ProxyAction::class);
+
     // le [/] à la fin d'une route sert à rendre le slash final optionnel
     $app->get('/galeries[/]', ProxyAction::class);
     $app->get('/galeries/{id}[/]', ProxyAction::class);
