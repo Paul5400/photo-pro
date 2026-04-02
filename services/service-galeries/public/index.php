@@ -2,6 +2,9 @@
 use photopro\galeries\api\actions\galeries\CreateGalerieAction;
 use photopro\galeries\api\actions\galeries\AddPhotoGalerieAction;
 use photopro\galeries\api\actions\galeries\DeletePhotoFromGalerieAction;
+use photopro\galeries\app\api\middlewares\AuthMiddleware;
+use photopro\src\api\actions\galeries\PreviewGalerieAction;
+use photopro\src\api\actions\galeries\PublishGalerieAction;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -36,18 +39,16 @@ $app->get('/', function (Request $request, Response $response, $args) {
     return $response;
 });
 
-// Real Actions from colleagues
-$app->post('/galeries[/]', CreateGalerieAction::class);
-$app->patch('/galeries/{id}/photos[/]', AddPhotoGalerieAction::class);
-$app->delete('/galeries/{id}/photos/{photoId}[/]', DeletePhotoFromGalerieAction::class);
-$app->post('/galeries/{id}/photos/{photoId}/commentaires[/]', function (Request $request, Response $response, $args) {
-    $response->getBody()->write(json_encode(['message' => 'Commentaire posté sur la photo ' . $args['photoId']]));
-    return $response->withHeader('Content-Type', 'application/json')->withStatus(201);
-});
+$app->post('/galeries', CreateGalerieAction::class);
+// ->add(new AuthMiddleware());
+$app->patch('/galeries/{id}/photos', AddPhotoGalerieAction::class);
+// ->add(new AuthMiddleware());
+$app->delete('/galeries/{id}/photos/{photoId}', DeletePhotoFromGalerieAction::class);
+// ->add(new AuthMiddleware());
+$app->get('/galeries/{id}/preview',PreviewGalerieAction::class );
+$app->post('/galeries/{id}/publish',PublishGalerieAction::class);
+$app->post('/galeries/{id}/unpublish',PublishGalerieAction::class);
 
-// Wildcard OPTIONS for CORS preflights
-$app->options('/{routes:.+}', function ($request, $response) {
-    return $response;
-});
+
 
 $app->run();

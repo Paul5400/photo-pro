@@ -64,8 +64,34 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
             $createdAt,
             $publishedAt,
             Uuid::fromString($galerie->getPhotographeId()),
-            $photoCouvertureId
+            $photoCouvertureId,
         );
+    }
+    public function createGaleriePrivee(
+        string $galerieId,
+        string $nomClient,
+        string $emailClient,
+        ?string $telephone):void{
+        $id = Uuid::uuid4();
+        $code = bin2hex(random_bytes(8));
+        $url = "https://site.com/galerie/".$code;
+
+        $stmt = $this->pdo->prepare(
+            'INSERT INTO galerie_privee
+            (id, galerie_id, nom_client, email_client, telephone_client, code_acces, url_acces)
+            VALUES
+            (:id, :galerie_id, :nom_client, :email_client, :telephone_client, :code_acces, :url_acces)'
+        );
+
+        $stmt->execute([
+            ':id' => $id->toString(),
+            ':galerie_id' => $galerieId,
+            ':nom_client' => $nomClient,
+            ':email_client' => $emailClient,
+            ':telephone_client' => $telephone,
+            ':code_acces' => $code,
+            ':url_acces' => $url
+        ]);
     }
 
     public function addPhotoToGalerie(GaleriePhoto $galeriePhoto): void
@@ -117,7 +143,33 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
             ':user_id' => $userId
         ]);
 
-        return $statement->fetchAll(PDO::FETCH_ASSOC);
+        $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        if (empty($rows)) {
+            return [];
+        }
+
+        $type = strtolower(trim($rows[0]['type']));
+        if (in_array($type, ['privée', 'privee', 'private'], true)) {
+            $privateStatement = $this->pdoGaleriePrivee->prepare(
+                'SELECT nom_client, email_client, telephone_client, code_acces, url_acces
+                 FROM galerie_privee
+                 WHERE galerie_id = :gallery_id'
+            );
+            $privateStatement->execute([':gallery_id' => $galleryId]);
+            $privateData = $privateStatement->fetch(PDO::FETCH_ASSOC) ?: [];
+
+            foreach ($rows as &$row) {
+                $row['nom_client'] = $privateData['nom_client'] ?? null;
+                $row['email_client'] = $privateData['email_client'] ?? null;
+                $row['telephone_client'] = $privateData['telephone_client'] ?? null;
+                $row['code_acces'] = $privateData['code_acces'] ?? null;
+                $row['url_acces'] = $privateData['url_acces'] ?? null;
+            }
+            unset($row);
+        }
+
+        return $rows;
     }
 
     public function publishGallery(string $galleryId, string $userId): void

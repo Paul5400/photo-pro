@@ -21,6 +21,7 @@ class AddPhotoGalerieAction
     {
         $galerieId = $args['id'] ?? $args['galerieId'] ?? null;
         $data = $request->getParsedBody();
+      
 
         if (!is_array($data)) {
             $response->getBody()->write(json_encode(['error' => 'Requête JSON invalide']));

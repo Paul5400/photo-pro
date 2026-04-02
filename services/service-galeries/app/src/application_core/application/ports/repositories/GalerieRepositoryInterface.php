@@ -7,7 +7,7 @@ use photopro\galeries\core\domain\entities\GaleriePhoto;
 interface GalerieRepositoryInterface
 {
     public function create(GalerieDTO $galerie): Galerie;
-
+    public function createGaleriePrivee(string $galerieId,string $nomClient,string $emailClient,?string $telephone):void;
     public function addPhotoToGalerie(GaleriePhoto $galeriePhoto): void;
 
     public function deletePhotoFromGalerie(string $photoId, string $galerieId): void;

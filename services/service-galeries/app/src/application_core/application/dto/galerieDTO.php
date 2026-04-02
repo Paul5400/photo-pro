@@ -13,6 +13,9 @@ class GalerieDTO
     public ?\datetime $published_at;
     public string $photographe_id;
     public ?string $photo_couverture_id;
+    private ?string $nomClient;
+    private ?string $emailClient;
+    private ?string $telephoneClient;
 
     public function __construct(
         string $titre,
@@ -23,7 +26,10 @@ class GalerieDTO
         string $photographe_id,
         ?string $description = null,
         ?string $photo_couverture_id = null,
-        ?\datetime $published_at = null
+        ?\datetime $published_at = null,
+       ?string $nomClient = null,
+        ?string $emailClient = null,
+        ?string $telephoneClient = null
     ) {
         $this->titre = $titre;
         $this->description = $description;
@@ -34,6 +40,9 @@ class GalerieDTO
         $this->published_at = $published_at;
         $this->photographe_id = $photographe_id;
         $this->photo_couverture_id = $photo_couverture_id;
+        $this->nomClient = $nomClient;
+        $this->emailClient = $emailClient;
+        $this->telephoneClient = $telephoneClient;
     }
 
     // Getters
@@ -80,5 +89,19 @@ class GalerieDTO
     public function getPhotoCouvertureId(): ?string
     {
         return $this->photo_couverture_id;
+    }
+    public function getNomClient(): ?string
+    {
+        return $this->nomClient;
+    }
+
+    public function getEmailClient(): ?string
+    {
+        return $this->emailClient;
+    }
+
+    public function getTelephoneClient(): ?string
+    {
+        return $this->telephoneClient;
     }
 }

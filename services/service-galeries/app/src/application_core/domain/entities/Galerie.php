@@ -4,7 +4,7 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use InvalidArgumentException;
 
-class Galerie
+class Galerie implements \JsonSerializable
 {
     public const TYPE_PUBLIQUE = 'publique';
     public const TYPE_PRIVEE = 'privée';
@@ -138,5 +138,21 @@ class Galerie
     public function getPhotoCouvertureId(): ?UuidInterface
     {
         return $this->photo_couverture_id;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->id->toString(),
+            'titre' => $this->titre,
+            'description' => $this->description,
+            'type' => $this->type,
+            'mode_mise_en_page' => $this->mode_mise_en_page,
+            'statut' => $this->statut,
+            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
+            'published_at' => $this->published_at?->format('Y-m-d H:i:s'),
+            'photographe_id' => $this->photographe_id->toString(),
+            'photo_couverture_id' => $this->photo_couverture_id?->toString(),
+        ];
     }
 }

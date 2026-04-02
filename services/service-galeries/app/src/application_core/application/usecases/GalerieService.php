@@ -17,7 +17,18 @@ class GalerieService implements GalerieServiceInterface
 
     public function createGalerie(GalerieDTO $galerieDTO): Galerie
     {
-        return $this->galerieRepository->create($galerieDTO);
+        $galerie = $this->galerieRepository->create($galerieDTO);
+
+        if ($galerieDTO->getType() === "privée") {
+            $this->galerieRepository->createGaleriePrivee(
+                $galerie->getId()->toString(),
+                $galerieDTO->getNomClient(),
+                $galerieDTO->getEmailClient(),
+                $galerieDTO->getTelephoneClient()
+            );
+        }
+
+        return $galerie;
     }
 
     public function addPhotoToGalerie(GaleriePhoto $galeriePhoto): void
