@@ -20,6 +20,11 @@ AppFactory::setContainer($container);
 $app = AppFactory::create();
 
 $app->addBodyParsingMiddleware();
+
+// Enregistrement des routes
+$routes = require __DIR__ . '/../src/api/config/routes.php';
+$routes($app);
+
 $app->addRoutingMiddleware();
 
 // CORS Headers
@@ -30,24 +35,6 @@ $app->add(function ($request, $handler) {
         ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
         ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
 });
-
-
-// Actions à écrire plus tard
-$app->get('/stockage[/]', function (Request $request, Response $response, $args) {
-    $response->getBody()->write(json_encode(['message' => 'Lister les fichiers stockés']));
-    return $response->withHeader('Content-Type', 'application/json');
-});
-
-$app->post('/stockage[/]', function (Request $request, Response $response, $args) {
-    $response->getBody()->write(json_encode(['message' => 'Fichier uploadé avec succès']));
-    return $response->withHeader('Content-Type', 'application/json')->withStatus(201);
-});
-
-$app->get('/', function (Request $request, Response $response, $args) {
-    $response->getBody()->write("Hello from service-stockage API");
-    return $response;
-});
-
 
 // Wildcard OPTIONS for CORS preflights
 $app->options('/{routes:.+}', function ($request, $response) {
