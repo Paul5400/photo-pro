@@ -6,7 +6,7 @@ namespace photopro\auth\core\domain\entities;
 
 class Photographe
 {
-    public string $id;
+    public ?string $id = null;
     public string $nom;
     public string $pseudo;
     public string $email;
