@@ -1,3 +1,4 @@
+
 -- schéma à insérer
 -- =========================================================
 -- TABLE : galerie
@@ -5,6 +6,12 @@
 
 CREATE TABLE IF NOT EXISTS galerie (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+=======
+-- =========================================================
+-- TABLE : galerie
+-- =========================================================
+CREATE TABLE IF NOT EXISTS galerie (
+    id                  VARCHAR(36)  NOT NULL,
     titre               VARCHAR(255) NOT NULL,
     description         VARCHAR(255),
     type                VARCHAR(50)  NOT NULL,
@@ -14,7 +21,6 @@ CREATE TABLE IF NOT EXISTS galerie (
     published_at        TIMESTAMP,
     photographe_id      VARCHAR(36)  NOT NULL,
     photo_couverture_id VARCHAR(36),
-
     CONSTRAINT pk_galerie PRIMARY KEY (id),
     CONSTRAINT fk_galerie_photographe
         FOREIGN KEY (photographe_id)
@@ -44,14 +50,31 @@ CREATE TABLE IF NOT EXISTS galerie_photo (
         FOREIGN KEY (photo_id)
         REFERENCES photo(id)
         ON DELETE CASCADE
+
+    CONSTRAINT pk_galerie PRIMARY KEY (id)
+);
+
+-- =========================================================
+-- TABLE : galerie_photo
+-- =========================================================
+CREATE TABLE IF NOT EXISTS galerie_photo (
+    galerie_id VARCHAR(36) NOT NULL,
+    photo_id   VARCHAR(36) NOT NULL,
+    ordre      INT         NOT NULL DEFAULT 0,
+    added_at   TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT pk_galerie_photo PRIMARY KEY (galerie_id, photo_id)
 );
 
 -- =========================================================
 -- TABLE : galerie_privee
 -- =========================================================
 CREATE TABLE IF NOT EXISTS galerie_privee (
+
     id               UUID PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
     galerie_id       UUID  NOT NULL,
+    id               VARCHAR(36)  NOT NULL,
+    galerie_id       VARCHAR(36)  NOT NULL,
     nom_client       VARCHAR(255) NOT NULL,
     email_client     VARCHAR(255) NOT NULL,
     telephone_client VARCHAR(50),
@@ -66,5 +89,7 @@ CREATE TABLE IF NOT EXISTS galerie_privee (
         FOREIGN KEY (galerie_id)
         REFERENCES galerie(id)
         ON DELETE CASCADE
+);
+    CONSTRAINT uk_galerie_privee_url_acces  UNIQUE (url_acces)
 );
 
