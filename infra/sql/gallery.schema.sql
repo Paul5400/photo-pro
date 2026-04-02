@@ -13,15 +13,7 @@ CREATE TABLE IF NOT EXISTS galerie (
     photographe_id      VARCHAR(36)  NOT NULL,
     photo_couverture_id VARCHAR(36),
 
-    CONSTRAINT pk_galerie PRIMARY KEY (id),
-    CONSTRAINT fk_galerie_photographe
-        FOREIGN KEY (photographe_id)
-        REFERENCES photographe(id)
-        ON DELETE CASCADE,
-    CONSTRAINT fk_galerie_photo_couverture
-        FOREIGN KEY (photo_couverture_id)
-        REFERENCES photo(id)
-        ON DELETE SET NULL
+    CONSTRAINT pk_galerie PRIMARY KEY (id)
 );
 
 -- =========================================================
@@ -33,15 +25,7 @@ CREATE TABLE IF NOT EXISTS galerie_photo (
     ordre      INT         NOT NULL DEFAULT 0,
     added_at   TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT pk_galerie_photo PRIMARY KEY (galerie_id, photo_id),
-    CONSTRAINT fk_galerie_photo_galerie
-        FOREIGN KEY (galerie_id)
-        REFERENCES galerie(id)
-        ON DELETE CASCADE,
-    CONSTRAINT fk_galerie_photo_photo
-        FOREIGN KEY (photo_id)
-        REFERENCES photo(id)
-        ON DELETE CASCADE
+    CONSTRAINT pk_galerie_photo PRIMARY KEY (galerie_id, photo_id)
 );
 
 -- =========================================================
@@ -58,9 +42,5 @@ CREATE TABLE IF NOT EXISTS galerie_privee (
 
     CONSTRAINT pk_galerie_privee PRIMARY KEY (id),
     CONSTRAINT uk_galerie_privee_galerie_id UNIQUE (galerie_id),
-    CONSTRAINT uk_galerie_privee_url_acces  UNIQUE (url_acces),
-    CONSTRAINT fk_galerie_privee_galerie
-        FOREIGN KEY (galerie_id)
-        REFERENCES galerie(id)
-        ON DELETE CASCADE
+    CONSTRAINT uk_galerie_privee_url_acces  UNIQUE (url_acces)
 );
