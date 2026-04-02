@@ -1,0 +1,15 @@
+meta {
+  name: 2 - Consulter Galerie
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:8080/galeries/1234?code=MON_CODE_PRIVE
+  body: none
+  auth: none
+}
+
+query {
+  code: MON_CODE_PRIVE
+}

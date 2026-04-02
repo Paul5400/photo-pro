@@ -1,15 +1,6 @@
 <?php
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Slim\Factory\AppFactory;
+declare(strict_types=1);
 
-require __DIR__ . '/../vendor/autoload.php';
-
-$app = AppFactory::create();
-
-$app->get('/', function (Request $request, Response $response, $args) {
-    $response->getBody()->write("Hello from service-auth API");
-    return $response;
-});
+$app = require __DIR__ . '/../app/config/bootstrap.php';
 
 $app->run();

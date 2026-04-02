@@ -20,9 +20,9 @@
   },
   "autoload": {
     "psr-4" : {
-      "photopro\\auth\\api\\" : "./src/api",
-      "photopro\\auth\\core\\" : "./src/application_core",
-      "photopro\\auth\\infra\\" : "./src/infrastructure"
+      "photopro\\auth\\api\\" : "./app/src/api",
+      "photopro\\auth\\core\\" : "./app/src/application_core",
+      "photopro\\auth\\infra\\" : "./app/src/infrastructure"
     }
   }
 }
