@@ -1,0 +1,21 @@
+meta {
+  name: 4-Ajouter-Photo-Galerie
+  type: http
+  seq: 4
+}
+
+patch {
+  url: http://localhost:8081/galeries/ID_DE_LA_GALERIE/photos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "id_photo": ID_DE_LA_PHOTO_S3
+  }
+}

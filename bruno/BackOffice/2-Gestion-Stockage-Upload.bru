@@ -1,0 +1,23 @@
+meta {
+  name: 2-Gestion-Stockage-Upload
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8081/stockage
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "titre": Ma superbe photo,
+    "description": Prise lors de l'Atelier,
+    "nom_fichier": capture.jpg
+  }
+}

@@ -1,0 +1,26 @@
+meta {
+  name: 3-Creer-Galerie-Privee
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8081/galeries
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "titre": Mariage Julie & Marc,
+    "description": Photos du jour J,
+    "type": privée,
+    "mise_en_page": grid,
+    "client_nom": Julie Dupont,
+    "client_email": julie.dupont@gmail.com
+  }
+}
