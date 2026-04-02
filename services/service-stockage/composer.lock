@@ -4,7 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
+<<<<<<< HEAD
     "content-hash": "cad01fd574151df5c3f521153866d419",
+=======
+    "content-hash": "05a346896b415381b326f4ba409b4163",
+>>>>>>> origin/feat/StockageS3
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -62,6 +66,7 @@
         },
         {
             "name": "aws/aws-sdk-php",
+<<<<<<< HEAD
             "version": "3.376.1",
             "source": {
                 "type": "git",
@@ -72,6 +77,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/475b367bb518fdfafd44b0848534f6636e0886e9",
                 "reference": "475b367bb518fdfafd44b0848534f6636e0886e9",
+=======
+            "version": "3.375.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/aws/aws-sdk-php.git",
+                "reference": "6cfa1798c3fa0182d902eda9419dca48c86d74a1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/6cfa1798c3fa0182d902eda9419dca48c86d74a1",
+                "reference": "6cfa1798c3fa0182d902eda9419dca48c86d74a1",
+>>>>>>> origin/feat/StockageS3
                 "shasum": ""
             },
             "require": {
@@ -153,9 +170,15 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
+<<<<<<< HEAD
                 "source": "https://github.com/aws/aws-sdk-php/tree/3.376.1"
             },
             "time": "2026-04-01T18:11:20+00:00"
+=======
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.375.0"
+            },
+            "time": "2026-03-30T19:30:55+00:00"
+>>>>>>> origin/feat/StockageS3
         },
         {
             "name": "brick/math",
@@ -2278,6 +2301,7 @@
         },
         {
             "name": "symfony/filesystem",
+<<<<<<< HEAD
             "version": "v8.0.8",
             "source": {
                 "type": "git",
@@ -2288,6 +2312,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/filesystem/zipball/66b769ae743ce2d13e435528fbef4af03d623e5a",
                 "reference": "66b769ae743ce2d13e435528fbef4af03d623e5a",
+=======
+            "version": "v8.0.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/filesystem.git",
+                "reference": "7bf9162d7a0dff98d079b72948508fa48018a770"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/7bf9162d7a0dff98d079b72948508fa48018a770",
+                "reference": "7bf9162d7a0dff98d079b72948508fa48018a770",
+>>>>>>> origin/feat/StockageS3
                 "shasum": ""
             },
             "require": {
@@ -2324,7 +2360,11 @@
             "description": "Provides basic utilities for the filesystem",
             "homepage": "https://symfony.com",
             "support": {
+<<<<<<< HEAD
                 "source": "https://github.com/symfony/filesystem/tree/v8.0.8"
+=======
+                "source": "https://github.com/symfony/filesystem/tree/v8.0.6"
+>>>>>>> origin/feat/StockageS3
             },
             "funding": [
                 {
@@ -2344,7 +2384,11 @@
                     "type": "tidelift"
                 }
             ],
+<<<<<<< HEAD
             "time": "2026-03-30T15:14:47+00:00"
+=======
+            "time": "2026-02-25T16:59:43+00:00"
+>>>>>>> origin/feat/StockageS3
         },
         {
             "name": "symfony/finder",
@@ -4746,13 +4790,18 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
         "php": ">=8.4",
         "ext-pdo": "*"
     },
+<<<<<<< HEAD
     "platform-dev": {},
     "plugin-api-version": "2.9.0"
+=======
+    "platform-dev": [],
+    "plugin-api-version": "2.6.0"
+>>>>>>> origin/feat/StockageS3
 }
