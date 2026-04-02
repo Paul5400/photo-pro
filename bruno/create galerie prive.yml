@@ -1,0 +1,29 @@
+info:
+  name: create galerie prive
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: http://localhost:8083/galeries
+  body:
+    type: json
+    data: |-
+      {
+        "titre": "Mariage Sophie",
+        "type": "publique",
+        "mode_mise_en_page": "grille",
+        "statut": "brouillon",
+        "photographe_id": "550e8400-e29b-41d4-a716-446655440001",
+        "description": "Photos du mariage",
+        "nomClient": "Sophie Martin",
+        "emailClient": "sophie@email.com",
+        "telephoneClient": "0600000000"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
