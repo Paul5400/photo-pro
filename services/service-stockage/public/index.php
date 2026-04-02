@@ -19,6 +19,8 @@ $app->add(function ($request, $handler) {
         ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
 });
 
+
+// Actions à écrire plus tard
 $app->get('/stockage[/]', function (Request $request, Response $response, $args) {
     $response->getBody()->write(json_encode(['message' => 'Lister les fichiers stockés']));
     return $response->withHeader('Content-Type', 'application/json');
