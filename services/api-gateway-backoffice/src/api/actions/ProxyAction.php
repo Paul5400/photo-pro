@@ -87,7 +87,8 @@ class ProxyAction
 
     private function resolveClient(string $path): Client
     {
-        if (str_starts_with($path, '/auth') || str_starts_with($path, '/tokens')) {
+        if (str_starts_with($path, '/auth') || 
+            str_starts_with($path, '/photographes')) {
             return $this->container->get('auth.client');
         }
 
