@@ -11,9 +11,5 @@ CREATE TABLE IF NOT EXISTS photo (
     uploaded_at          TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     photographe_id       VARCHAR(36)  NOT NULL,
 
-    CONSTRAINT pk_photo PRIMARY KEY (id),
-    CONSTRAINT fk_photo_photographe
-        FOREIGN KEY (photographe_id)
-        REFERENCES photographe(id)
-        ON DELETE CASCADE
+    CONSTRAINT pk_photo PRIMARY KEY (id)
 );
