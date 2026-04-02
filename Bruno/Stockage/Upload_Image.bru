@@ -1,0 +1,27 @@
+meta {
+  name: "Upload Image"
+  type: "http"
+  seq: 1
+}
+
+post {
+  url: {{base_url_stockage}}/images
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  image: @file(/home/paul/Documents/PhotoPro/api_tests/test_image.png)
+}
+
+docs {
+  # Upload d'image
+  
+  Cette requête permet de tester le service de stockage.
+  
+  ## Variables d'environnement utilisées :
+  - `{{base_url_stockage}}` : L'URL de base du service (ex: http://localhost:18080)
+  
+  ## Paramètres :
+  - `image` : Le fichier binaire à envoyer (Multipart Form)
+}

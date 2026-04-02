@@ -1,0 +1,18 @@
+meta {
+  name: 2-Login
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8081/auth/login/photographe
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "photographe@photopro.net",
+    "password": "password123"
+  }
+}
