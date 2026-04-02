@@ -23,12 +23,6 @@ class EnvoyerNotificationUseCase implements NotificationHandlerInterface
         // Validation et construction du DTO depuis le payload AMQP brut
         $dto = NotificationEventDTO::fromArray($event);
 
-        // Seules les galeries privées génèrent des notifications
-        if (empty($dto->clientEmail)) {
-            echo "[UseCase] Pas de client email — notification ignorée.\n";
-            return;
-        }
-
         echo sprintf(
             "[UseCase] Envoi notification '%s' → %s\n",
             $dto->typeEvenement->value,

@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-
 use DI\ContainerBuilder;
 use Dotenv\Dotenv;
 use photopro\notifications\infra\messaging\RabbitMQConsumer;
+
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 // Chargement des variables d'environnement
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../config');

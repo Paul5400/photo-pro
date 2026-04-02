@@ -29,7 +29,7 @@ class RabbitMQConsumer
         $exchangeName = $this->config['exchange'];
         $queueName    = $this->config['queue'];
 
-        // Déclaration de l'exchange (type topic pour le routing par pattern)
+        // Déclaration de l'exchange principal (type topic pour le routing par pattern)
         $channel->exchange_declare(
             exchange:    $exchangeName,
             type:        'topic',
@@ -38,7 +38,28 @@ class RabbitMQConsumer
             auto_delete: false
         );
 
-        // Déclaration de la queue
+        // Déclaration de l'exchange DLX (fanout) pour recevoir les messages rejetés définitivement
+        $dlxName  = $exchangeName . '.dlx';
+        $dlqName  = $queueName . '.dlq';
+        $channel->exchange_declare(
+            exchange:    $dlxName,
+            type:        'fanout',
+            passive:     false,
+            durable:     true,
+            auto_delete: false
+        );
+
+        // Déclaration de la Dead Letter Queue et liaison avec le DLX
+        $channel->queue_declare(
+            queue:       $dlqName,
+            passive:     false,
+            durable:     true,
+            exclusive:   false,
+            auto_delete: false
+        );
+        $channel->queue_bind($dlqName, $dlxName, '');
+
+        // Déclaration de la queue principale avec redirection vers le DLX en cas de rejet definitif
         $channel->queue_declare(
             queue:       $queueName,
             passive:     false,
@@ -46,7 +67,7 @@ class RabbitMQConsumer
             exclusive:   false,
             auto_delete: false,
             arguments:   new AMQPTable([
-                'x-dead-letter-exchange' => $exchangeName . '.dlx',
+                'x-dead-letter-exchange' => $dlxName,
             ])
         );
 
@@ -109,8 +130,15 @@ class RabbitMQConsumer
                 $this->handler->handle($event);
                 $message->ack();
                 echo "[Consumer] Message traité avec succès.\n";
+            } catch (\InvalidArgumentException $e) {
+                // Erreur permanente (payload invalide, champ manquant, type inconnu…)
+                // → requeue:false : le message part en DLQ via le DLX
+                echo sprintf("[Consumer] ERREUR permanente : %s — message envoyé en DLQ.\n", $e->getMessage());
+                $message->nack(requeue: false);
             } catch (\Throwable $e) {
-                echo sprintf("[Consumer] ERREUR traitement : %s\n", $e->getMessage());
+                // Erreur transiente (SMTP indisponible, réseau…)
+                // → requeue:true : le message sera retenté
+                echo sprintf("[Consumer] ERREUR transiente : %s — message remis en queue.\n", $e->getMessage());
                 $message->nack(requeue: true);
             }
         };
