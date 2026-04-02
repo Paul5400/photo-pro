@@ -28,14 +28,15 @@ class PhotographeLoginAction
             $response->getBody()->write(json_encode($result));
             return $response->withHeader('Content-Type', 'application/json');
         } catch (\Exception $e) {
+            $statusCode = $e->getCode();
+            // On s'assure que le code HTTP est valide pour Slim (entre 400 et 599)
+            if (!is_int($statusCode) || $statusCode < 400 || $statusCode > 549) {
+                $statusCode = 500;
+            }
+
             $response->getBody()->write(json_encode([
                 'error' => $e->getMessage()
             ]));
-            
-            $statusCode = $e->getCode();
-            if ($statusCode < 100 || $statusCode > 599) {
-                $statusCode = 500;
-            }
             
             return $response
                 ->withHeader('Content-Type', 'application/json')

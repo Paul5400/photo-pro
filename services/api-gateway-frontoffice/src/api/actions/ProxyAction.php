@@ -12,10 +12,12 @@ use Psr\Container\ContainerInterface;
 class ProxyAction
 {
     private ContainerInterface $container;
+    private bool $mockMode;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, bool $mockMode = true)
     {
         $this->container = $container;
+        $this->mockMode = $mockMode;
     }
 
     public function __invoke(Request $request, Response $response): Response
@@ -38,9 +40,8 @@ class ProxyAction
             $options['body'] = $body;
         }
 
-        // --- MODE MOCK TEMPORAIRE (pour éviter les erreurs sans microservice) ---
-        $mockMode = true; 
-        if ($mockMode) {
+        // --- GESTION DU MODE MOCK (Défini dans le .env global) ---
+        if ($this->mockMode) {
             $mockResponse = [
                 'gateway_status' => 'OK',
                 'message' => 'Réponse simulée par la Gateway Front pour : ' . $path,
@@ -62,11 +63,25 @@ class ProxyAction
         } catch (ClientException $e) {
             $upstream = $e->getResponse();
             if ($upstream === null) {
-                throw $e;
+                return $this->handleInternalError($response, $e->getMessage());
             }
             $response->getBody()->write($upstream->getBody()->getContents());
             return $this->withUpstreamHeaders($response, $upstream);
+        } catch (\Exception $e) {
+            return $this->handleInternalError($response, $e->getMessage());
         }
+    }
+
+    private function handleInternalError(Response $response, string $message): Response
+    {
+        $response->getBody()->write(json_encode([
+            'error' => 'Bad Gateway',
+            'message' => 'Le microservice est indisponible ou a renvoyé une réponse invalide.',
+            'details' => $message
+        ]));
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(502);
     }
 
     private function resolveClient(string $path): Client

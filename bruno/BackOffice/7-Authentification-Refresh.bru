@@ -1,0 +1,17 @@
+meta {
+  name: 7-Authentification-Refresh
+  type: http
+  seq: 7
+}
+
+post {
+  url: http://localhost:8081/auth/refresh
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "refresh_token": REFRESH_TOKEN_OBTENU_LORS_DU_SIGNIN
+  }
+}

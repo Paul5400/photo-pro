@@ -1,6 +1,9 @@
+
+-- schéma à insérer
 -- =========================================================
 -- TABLE : galerie
 -- =========================================================
+
 CREATE TABLE IF NOT EXISTS galerie (
     id                  VARCHAR(36)  NOT NULL,
     titre               VARCHAR(255) NOT NULL,
@@ -15,13 +18,13 @@ CREATE TABLE IF NOT EXISTS galerie (
 
     CONSTRAINT pk_galerie PRIMARY KEY (id)
 );
-
 -- =========================================================
 -- TABLE : galerie_photo
 -- =========================================================
+
 CREATE TABLE IF NOT EXISTS galerie_photo (
-    galerie_id VARCHAR(36) NOT NULL,
-    photo_id   VARCHAR(36) NOT NULL,
+    galerie_id UUID  NOT NULL,
+    photo_id   UUID NOT NULL,
     ordre      INT         NOT NULL DEFAULT 0,
     added_at   TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -32,6 +35,9 @@ CREATE TABLE IF NOT EXISTS galerie_photo (
 -- TABLE : galerie_privee
 -- =========================================================
 CREATE TABLE IF NOT EXISTS galerie_privee (
+
+    id               UUID PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+    galerie_id       UUID  NOT NULL,
     id               VARCHAR(36)  NOT NULL,
     galerie_id       VARCHAR(36)  NOT NULL,
     nom_client       VARCHAR(255) NOT NULL,
@@ -44,3 +50,4 @@ CREATE TABLE IF NOT EXISTS galerie_privee (
     CONSTRAINT uk_galerie_privee_galerie_id UNIQUE (galerie_id),
     CONSTRAINT uk_galerie_privee_url_acces  UNIQUE (url_acces)
 );
+

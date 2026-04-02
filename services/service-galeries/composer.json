@@ -20,9 +20,9 @@
   },
   "autoload": {
     "psr-4" : {
-      "photopro\\galeries\\api\\" : "./src/api",
-      "photopro\\galeries\\core\\" : "./src/application_core",
-      "photopro\\galeries\\infra\\" : "./src/infrastructure"
+      "photopro\\galeries\\api\\" : "./app/src/api",
+      "photopro\\galeries\\core\\" : "./app/src/application_core",
+      "photopro\\galeries\\infra\\" : "./app/src/infrastructure"
     }
   }
 }
