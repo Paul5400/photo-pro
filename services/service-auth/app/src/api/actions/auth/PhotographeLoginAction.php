@@ -25,8 +25,16 @@ class PhotographeLoginAction
         
         try {
             $result = $this->authService->login($dto);
+            $cookie = sprintf(
+                'refresh_token=%s; Path=/auth/refresh; Max-Age=%d; HttpOnly; SameSite=Lax',
+                rawurlencode($result['refresh_token']),
+                30 * 24 * 60 * 60
+            );
+            unset($result['refresh_token']);
             $response->getBody()->write(json_encode($result));
-            return $response->withHeader('Content-Type', 'application/json');
+            return $response
+                ->withHeader('Content-Type', 'application/json')
+                ->withAddedHeader('Set-Cookie', $cookie);
         } catch (\Exception $e) {
             $statusCode = $e->getCode();
             // On s'assure que le code HTTP est valide pour Slim (entre 400 et 599)
