@@ -58,4 +58,14 @@ class JWTAuthProvider implements AuthProviderInterface
         $payload = $this->jwtManager->createVisiteurPayload($galerieId);
         return $this->jwtManager->encode($payload);
     }
+    public function validateRefreshToken(string $refreshToken): ?Photographe
+    {
+        $payload = $this->jwtManager->decode($refreshToken);
+
+        if (!$payload || !isset($payload['sub']) || !isset($payload['type']) || $payload['type'] !== 'refresh') {
+            return null;
+        }
+
+        return $this->photographeRepository->findById($payload['sub']);
+    }
 }
