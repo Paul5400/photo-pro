@@ -1,0 +1,16 @@
+{
+  "name": "Local - PhotoPro",
+  "values": [
+    {
+      "name": "base_url_stockage",
+      "value": "http://localhost:18080",
+      "enabled": true
+    },
+    {
+      "name": "jwt_token",
+      "value": "VOTRE_TOKEN_ICI",
+      "enabled": true
+    }
+  ],
+  "isDefault": true
+}

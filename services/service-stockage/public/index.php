@@ -1,10 +1,22 @@
 <?php
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
+
 use Slim\Factory\AppFactory;
+use DI\ContainerBuilder;
+use Dotenv\Dotenv;
 
 require __DIR__ . '/../vendor/autoload.php';
 
+// Chargement des variables d'environnement
+$dotenv = Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv->safeLoad();
+
+// Configuration du Container (PHP-DI)
+$builder = new ContainerBuilder();
+$builder->addDefinitions(__DIR__ . '/../src/api/config/dependencies.php');
+$container = $builder->build();
+
+// Création de l'application avec le container
+AppFactory::setContainer($container);
 $app = AppFactory::create();
 
 $app->addBodyParsingMiddleware();
@@ -35,6 +47,7 @@ $app->get('/', function (Request $request, Response $response, $args) {
     $response->getBody()->write("Hello from service-stockage API");
     return $response;
 });
+
 
 // Wildcard OPTIONS for CORS preflights
 $app->options('/{routes:.+}', function ($request, $response) {

@@ -10,6 +10,6 @@ CREATE TABLE IF NOT EXISTS photo (
     chemin_s3            VARCHAR(500) NOT NULL,
     uploaded_at          TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     photographe_id       VARCHAR(36)  NOT NULL,
-
     CONSTRAINT pk_photo PRIMARY KEY (id)
-    );
+);
+
