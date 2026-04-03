@@ -5,7 +5,7 @@ meta {
 }
 
 patch {
-  url: http://localhost:8081/galeries/ID_DE_LA_GALERIE/photos
+  url: http://localhost:8083/galeries/04a7e6c7-385c-4a8f-a080-40343d454d91/photos
   body: json
   auth: bearer
 }
@@ -16,6 +16,6 @@ auth:bearer {
 
 body:json {
   {
-    "id_photo": ID_DE_LA_PHOTO_S3
-  }
+  "photo_id":"550e8400-e29b-41d4-a716-446655441004",
+}
 }
