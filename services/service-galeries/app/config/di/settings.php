@@ -14,4 +14,13 @@ return [
             'charset' => 'utf8',
         ],
     ],
+
+    'amqp' => [
+        'host'     => getenv('RABBITMQ_HOST')  ?: 'rabbitmq',
+        'port'     => (int)(getenv('RABBITMQ_PORT') ?: 5672),
+        'user'     => getenv('RABBITMQ_USER')  ?: 'photopro',
+        'pass'     => getenv('RABBITMQ_PASS')  ?: 'photopro',
+        'vhost'    => getenv('RABBITMQ_VHOST') ?: '/',
+        'exchange' => getenv('AMQP_EXCHANGE')  ?: 'photopro.events',
+    ],
 ];

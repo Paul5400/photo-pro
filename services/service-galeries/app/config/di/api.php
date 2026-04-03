@@ -8,10 +8,12 @@ use photopro\galeries\api\actions\galeries\PublishGalerieAction;
 use photopro\galeries\api\actions\galeries\UnpublishGalerieAction;
 use photopro\galeries\core\application\ports\repositories\GalerieRepositoryInterface;
 use photopro\galeries\core\application\ports\services\GalerieServiceInterface;
+use photopro\galeries\core\application\ports\GalerieEventPublisherInterface;
 use photopro\galeries\core\application\usecases\GalerieService;
 use photopro\galeries\core\application\usecases\PreviewGalerieUseCase;
 use photopro\galeries\core\application\usecases\PublishGalerieUseCase;
 use photopro\galeries\core\application\usecases\UnpublishGalerieUseCase;
+use photopro\galeries\infra\messaging\RabbitMQPublisher;
 
 return [
     // action
@@ -33,15 +35,25 @@ return [
     UnpublishGalerieAction::class => function ($c) {
         return new UnpublishGalerieAction($c->get(UnpublishGalerieUseCase::class));
     },
+    // event publisher
+    GalerieEventPublisherInterface::class => function ($c) {
+        return new RabbitMQPublisher($c->get('amqp'));
+    },
     // use cases
     PreviewGalerieUseCase::class => function ($c) {
         return new PreviewGalerieUseCase($c->get(GalerieRepositoryInterface::class));
     },
     PublishGalerieUseCase::class => function ($c) {
-        return new PublishGalerieUseCase($c->get(GalerieRepositoryInterface::class));
+        return new PublishGalerieUseCase(
+            $c->get(GalerieRepositoryInterface::class),
+            $c->get(GalerieEventPublisherInterface::class)
+        );
     },
     UnpublishGalerieUseCase::class => function ($c) {
-        return new UnpublishGalerieUseCase($c->get(GalerieRepositoryInterface::class));
+        return new UnpublishGalerieUseCase(
+            $c->get(GalerieRepositoryInterface::class),
+            $c->get(GalerieEventPublisherInterface::class)
+        );
     },
     // service
     GalerieServiceInterface::class => function ($c) {

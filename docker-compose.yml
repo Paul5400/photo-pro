@@ -74,6 +74,11 @@ services:
       - gallery.db
       - rabbitmq
       - S3
+    environment:
+      - COMPOSER_PROCESS_TIMEOUT=0
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USER=photopro
+      - RABBITMQ_PASS=photopro
     command: sh -c "composer install --no-dev && php -S 0.0.0.0:80 -t /var/php/public"
 
   api.notifications:

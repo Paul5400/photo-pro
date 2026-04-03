@@ -218,5 +218,19 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
             throw new \Exception("Galerie non trouvée ou non autorisée");
         }
     }
+
+    public function getGalerieForNotification(string $galleryId): array
+    {
+        $statement = $this->pdo->prepare(
+            'SELECT g.titre, gp.email_client, gp.url_acces, gp.code_acces
+             FROM galerie g
+             LEFT JOIN galerie_privee gp ON gp.galerie_id = g.id
+             WHERE g.id = :gallery_id'
+        );
+        $statement->execute([':gallery_id' => $galleryId]);
+        $row = $statement->fetch(\PDO::FETCH_ASSOC);
+
+        return $row ?: ['titre' => '', 'email_client' => null, 'url_acces' => null, 'code_acces' => null];
+    }
 }
 

@@ -17,4 +17,10 @@ interface GalerieRepositoryInterface
     public function publishGallery(string $galleryId, string $userId): void;
 
     public function unpublishGallery(string $galleryId, string $userId): void;
+
+    /**
+     * Retourne titre + données galerie_privée pour composer la notification AMQP.
+     * @return array{titre: string, email_client: string|null, url_acces: string|null, code_acces: string|null}
+     */
+    public function getGalerieForNotification(string $galleryId): array;
 }
