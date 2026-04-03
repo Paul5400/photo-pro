@@ -1,11 +1,11 @@
 meta {
-  name: 4-Publier-Galerie
+  name: 6-Preview-Galerie
   type: http
-  seq: 4
+  seq: 6
 }
 
-post {
-  url: http://localhost:8083/galeries/{{galerie_id}}/publish
+get {
+  url: http://localhost:8083/galeries/{{galerie_id}}/preview
   body: none
   auth: none
 }

@@ -36,8 +36,6 @@ CREATE TABLE IF NOT EXISTS galerie_photo (
 -- =========================================================
 CREATE TABLE IF NOT EXISTS galerie_privee (
 
-    id               UUID PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-    galerie_id       UUID  NOT NULL,
     id               VARCHAR(36)  NOT NULL,
     galerie_id       VARCHAR(36)  NOT NULL,
     nom_client       VARCHAR(255) NOT NULL,

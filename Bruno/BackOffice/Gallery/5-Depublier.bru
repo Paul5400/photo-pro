@@ -1,11 +1,11 @@
 meta {
-  name: 4-Publier-Galerie
+  name: 5-Depublier-Galerie
   type: http
-  seq: 4
+  seq: 5
 }
 
 post {
-  url: http://localhost:8083/galeries/{{galerie_id}}/publish
+  url: http://localhost:8083/galeries/{{galerie_id}}/unpublish
   body: none
   auth: none
 }
