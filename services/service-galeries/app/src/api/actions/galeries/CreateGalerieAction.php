@@ -34,7 +34,7 @@ class CreateGalerieAction
                 $data['mode_mise_en_page'] ?? '',
                 $data['statut'] ?? '',
                 new \DateTime(),
-                $data['photographe_id'] ?? '',
+                $userId ,
                 $data['description'] ?? null,
                 $data['photo_couverture_id'] ?? null,
                 isset($data['published_at']) ? new \DateTime($data['published_at']) : null,
