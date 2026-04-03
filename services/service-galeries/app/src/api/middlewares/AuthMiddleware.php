@@ -1,5 +1,5 @@
 <?php
-namespace photopro\galeries\app\api\middlewares;
+namespace photopro\galeries\api\middlewares;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;

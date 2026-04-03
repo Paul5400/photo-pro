@@ -23,7 +23,7 @@ return [
         ],
 
         'jwt' => [
-            'secret' => $_ENV['JWT_SECRET'] ?? '',
+            'secret' => getenv('JWT_SECRET') ?: ($_ENV['JWT_SECRET'] ?? ''),
         ],
     ],
 ];

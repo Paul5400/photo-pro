@@ -29,6 +29,9 @@ return function (App $app) {
         $group->delete('/galeries/{id}[/]', ProxyAction::class);
         $group->patch('/galeries/{id}/photos[/]', ProxyAction::class);
         $group->delete('/galeries/{id}/photos/{photoId}[/]', ProxyAction::class);
+        $group->get('/galeries/{id}/preview[/]', ProxyAction::class);
+        $group->post('/galeries/{id}/publish[/]', ProxyAction::class);
+        $group->post('/galeries/{id}/unpublish[/]', ProxyAction::class);
         
         // Stockage
         $group->get('/stockage[/]', ProxyAction::class);

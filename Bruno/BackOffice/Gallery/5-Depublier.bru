@@ -5,15 +5,12 @@ meta {
 }
 
 post {
-  url: http://localhost:8083/galeries/{{galerie_id}}/unpublish
+  url: {{base_url_gallery}}/galeries/{{galerie_id}}/unpublish
   body: none
   auth: none
 }
 
 headers {
+  Authorization: Bearer {{jwt_token}}
   X-User-Id: ffffffff-0000-0000-0000-000000000001
-}
-
-vars:pre-request {
-  galerie_id: REMPLACER_PAR_ID_GALERIE
 }
