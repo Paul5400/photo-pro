@@ -1,6 +1,6 @@
 <?php
 
-namespace photopro\src\api\actions\galeries;
+namespace photopro\galeries\api\actions\galeries;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -19,7 +19,7 @@ class UnpublishGalerieAction
         try {
             $galleryId = $args['id'];
             $user = $request->getAttribute('user');
-            $userId = $user->id;
+            $userId = $user->id ?? $request->getHeaderLine('X-User-Id');
 
             $this->useCase->execute($galleryId, $userId);
 
