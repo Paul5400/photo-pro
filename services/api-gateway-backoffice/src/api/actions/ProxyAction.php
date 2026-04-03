@@ -28,6 +28,11 @@ class ProxyAction
         // Router vers le bon microservice
         $client = $this->resolveClient($path);
         
+        $targetPath = $path;
+        if (str_starts_with($path, '/stockage/upload')) {
+            $targetPath = '/upload';
+        }
+        
         $options = [
             'headers' => $this->filterHeaders($request->getHeaders()),
         ];
@@ -35,9 +40,39 @@ class ProxyAction
         if (!empty($query)) {
             $options['query'] = $query;
         }
-        $body = (string)$request->getBody();
-        if ($body !== '') {
-            $options['body'] = $body;
+
+        // --- GESTION DES FICHIERS UPLOADES (MULTIPART) ---
+        $uploadedFiles = $request->getUploadedFiles();
+        if (!empty($uploadedFiles)) {
+            $multipart = [];
+            
+            // Ajouter les champs du corps de la requête (parsed body)
+            $parsedBody = $request->getParsedBody();
+            if (is_array($parsedBody)) {
+                foreach ($parsedBody as $key => $value) {
+                    $multipart[] = [
+                        'name'     => $key,
+                        'contents' => (string)$value,
+                    ];
+                }
+            }
+
+            // Ajouter les fichiers
+            foreach ($uploadedFiles as $name => $file) {
+                if ($file->getError() === UPLOAD_ERR_OK) {
+                    $multipart[] = [
+                        'name'     => $name,
+                        'contents' => $file->getStream()->getContents(),
+                        'filename' => $file->getClientFilename(),
+                    ];
+                }
+            }
+            $options['multipart'] = $multipart;
+        } else {
+            $body = (string)$request->getBody();
+            if ($body !== '') {
+                $options['body'] = $body;
+            }
         }
 
         // --- GESTION DU MODE MOCK (Défini dans dependencies.php) ---
@@ -50,7 +85,9 @@ class ProxyAction
                 'path' => $path,
                 'data' => [
                     'info' => 'Ce microservice sera développé bientôt.'
-                ]
+                ],
+                'headers' => $options['headers'] ?? [],
+                'multipart' => isset($options['multipart']) ? count($options['multipart']) : 0
             ];
             $response->getBody()->write(json_encode($mockResponse));
             return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
@@ -58,7 +95,7 @@ class ProxyAction
         // ------------------------------------------------------------------------
 
         try {
-            $responseMicroservice = $client->request($method, $path, $options);
+            $responseMicroservice = $client->request($method, $targetPath, $options);
             $response->getBody()->write($responseMicroservice->getBody()->getContents());
             return $this->withUpstreamHeaders($response, $responseMicroservice);
         } catch (ClientException $e) {
@@ -101,7 +138,7 @@ class ProxyAction
 
     private function filterHeaders(array $headers): array
     {
-        $blocked = ['host', 'content-length'];
+        $blocked = ['host', 'content-length', 'content-type'];
         $filtered = [];
         foreach ($headers as $name => $values) {
             if (in_array(strtolower($name), $blocked, true)) {

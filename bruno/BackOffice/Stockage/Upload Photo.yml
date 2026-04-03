@@ -1,0 +1,24 @@
+info:
+  name: Upload Photo
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:8081/stockage/upload
+  body:
+    type: multipart-form
+    data:
+      - name: image
+        type: file
+        value:
+          - /home/paul/Documents/photo-pro/api_tests/test_image.png
+  auth:
+    type: bearer
+    token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwaG90b3Byby1hdXRoIiwiaWF0IjoxNzc1MjA0MzczLCJleHAiOjE3NzU4MDkxNzMsInN1YiI6IjliMGIwNzY0LTM2ZDUtNDFlNy1hN2JjLTk2MTVlZTc1ZjA1NCIsInJvbGUiOiJwaG90b2dyYXBoZSIsInVzZXIiOnsiaWQiOiI5YjBiMDc2NC0zNmQ1LTQxZTctYTdiYy05NjE1ZWU3NWYwNTQiLCJwc2V1ZG8iOiJ0ZXN0bW91YWQiLCJlbWFpbCI6Im1vdWFkdGFqQHRlc3QuY29tIn19.LS4BdHjyKFzXfNIRyJz-YCcM3-FP1O79cHoXDvqIZyk
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
