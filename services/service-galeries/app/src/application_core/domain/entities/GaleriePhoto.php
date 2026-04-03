@@ -8,17 +8,20 @@ class   GaleriePhoto {
     private UuidInterface $photo_id;
     private int $ordre;
     private DateTime $added_at;
+    private ?string $url;
 
     public function __construct(
         UuidInterface $galerie_id,
         UuidInterface $photo_id,
         int $ordre,
-        DateTime $added_at
+        DateTime $added_at,
+        ?string $url = null
     ) {
         $this->galerie_id = $galerie_id;
         $this->photo_id = $photo_id;
         $this->ordre = $ordre;
         $this->added_at = $added_at;
+        $this->url = $url;
     }
 
     // Getters
@@ -40,5 +43,10 @@ class   GaleriePhoto {
     public function getAddedAt(): DateTime
     {
         return $this->added_at;
+    }
+
+    public function getUrl(): ?string
+    {
+        return $this->url;
     }
 }

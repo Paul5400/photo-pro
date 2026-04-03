@@ -5,6 +5,7 @@ use photopro\galeries\api\actions\galeries\DeletePhotoFromGalerieAction;
 use photopro\galeries\api\actions\galeries\PreviewGalerieAction;
 use photopro\galeries\api\actions\galeries\PublishGalerieAction;
 use photopro\galeries\api\actions\galeries\UnpublishGalerieAction;
+use photopro\galeries\api\middlewares\AuthMiddleware;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -41,12 +42,13 @@ $app->get('/', function (Request $request, Response $response, $args) {
 
 $app->post('/galeries', CreateGalerieAction::class)
       ->add(new AuthMiddleware());
-$app->patch('/galeries/{id}/photos', AddPhotoGalerieAction::class);
-$app->delete('/galeries/{id}/photos/{photoId}', DeletePhotoFromGalerieAction::class);
+$app->patch('/galeries/{id}/photos', AddPhotoGalerieAction::class)
+    ->add(new AuthMiddleware());
+$app->delete('/galeries/{id}/photos/{photoId}', DeletePhotoFromGalerieAction::class)
+    ->add(new AuthMiddleware());
 $app->get('/galeries/{id}/preview',PreviewGalerieAction::class );
 $app->post('/galeries/{id}/publish',PublishGalerieAction::class);
 $app->post('/galeries/{id}/unpublish',UnpublishGalerieAction::class);
-
 
 
 $app->run();
