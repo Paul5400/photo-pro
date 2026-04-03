@@ -35,7 +35,6 @@ CREATE TABLE IF NOT EXISTS galerie_photo (
 -- TABLE : galerie_privee
 -- =========================================================
 CREATE TABLE IF NOT EXISTS galerie_privee (
-
     id               VARCHAR(36)  NOT NULL,
     galerie_id       VARCHAR(36)  NOT NULL,
     nom_client       VARCHAR(255) NOT NULL,

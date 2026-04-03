@@ -15,4 +15,6 @@ interface AuthnServiceInterface
     public function register(CreatePhotographeDTO $dto): array;
 
     public function loginVisiteur(ConnexionVisiteurDTO $dto): array;
+
+    public function refreshToken(string $refreshToken): array;
 }

@@ -29,9 +29,16 @@ class RegisterAction
 
         try {
             $result = $this->authService->register($dto);
+            $cookie = sprintf(
+                'refresh_token=%s; Path=/auth/refresh; Max-Age=%d; HttpOnly; SameSite=Lax',
+                rawurlencode($result['refresh_token']),
+                30 * 24 * 60 * 60
+            );
+            unset($result['refresh_token']);
             $response->getBody()->write(json_encode($result));
             return $response
                 ->withHeader('Content-Type', 'application/json')
+                ->withAddedHeader('Set-Cookie', $cookie)
                 ->withStatus(201);
         } catch (\Exception $e) {
             $response->getBody()->write(json_encode([

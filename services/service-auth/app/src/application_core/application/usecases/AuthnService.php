@@ -105,4 +105,26 @@ class AuthnService implements AuthnServiceInterface
             'galerie_id' => $galeriePrivee['galerie_id'],
         ];
     }
+    public function refreshToken(string $refreshToken): array
+    {
+        $photographe = $this->authProvider->validateRefreshToken($refreshToken);
+
+        if (!$photographe) {
+            throw new \Exception('Refresh token invalide', 401);
+        }
+
+        $token = $this->authProvider->generateToken($photographe);
+        $newRefreshToken = $this->authProvider->generateRefreshToken($photographe);
+
+        return [
+            'token' => $token,
+            'refresh_token' => $newRefreshToken,
+            'photographe' => [
+                'id' => $photographe->id,
+                'nom' => $photographe->nom,
+                'pseudo' => $photographe->pseudo,
+                'email' => $photographe->email,
+            ],
+        ];
+    }
 }
