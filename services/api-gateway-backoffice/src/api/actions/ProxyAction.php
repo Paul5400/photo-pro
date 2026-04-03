@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace photopro\backoffice\api\actions;
@@ -24,15 +25,15 @@ class ProxyAction
     {
         $path = $request->getUri()->getPath();
         $method = $request->getMethod();
-        
+
         // Router vers le bon microservice
         $client = $this->resolveClient($path);
-        
+
         $targetPath = $path;
         if (str_starts_with($path, '/stockage/upload')) {
             $targetPath = '/upload';
         }
-        
+
         $options = [
             'headers' => $this->filterHeaders($request->getHeaders()),
         ];
@@ -45,7 +46,7 @@ class ProxyAction
         $uploadedFiles = $request->getUploadedFiles();
         if (!empty($uploadedFiles)) {
             $multipart = [];
-            
+
             // Ajouter les champs du corps de la requête (parsed body)
             $parsedBody = $request->getParsedBody();
             if (is_array($parsedBody)) {
@@ -124,8 +125,10 @@ class ProxyAction
 
     private function resolveClient(string $path): Client
     {
-        if (str_starts_with($path, '/auth') || 
-            str_starts_with($path, '/photographes')) {
+        if (
+            str_starts_with($path, '/auth') ||
+            str_starts_with($path, '/photographes')
+        ) {
             return $this->container->get('auth.client');
         }
 
@@ -155,6 +158,9 @@ class ProxyAction
         $contentType = $upstream->getHeaderLine('Content-Type');
         if ($contentType !== '') {
             $response = $response->withHeader('Content-Type', $contentType);
+        }
+        foreach ($upstream->getHeader('Set-Cookie') as $cookieHeader) {
+            $response = $response->withAddedHeader('Set-Cookie', $cookieHeader);
         }
         $location = $upstream->getHeaderLine('Location');
         if ($location !== '') {
