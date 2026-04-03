@@ -127,12 +127,11 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
                 g.mode_mise_en_page,
                 g.created_at,
                 g.published_at,
-                p.id AS photo_id,
-                p.url,
-                p.titre AS photo_titre
+                gp.photo_id,
+                NULL AS url,
+                NULL AS photo_titre
             FROM galerie g
-            LEFT JOIN galerie_photo gp ON g.id = gp.galerie_id
-            LEFT JOIN photo p ON gp.photo_id = p.id
+            LEFT JOIN galerie_photo gp ON g.id::uuid = gp.galerie_id
             WHERE g.id = :gallery_id 
             AND g.photographe_id = :user_id
             ORDER BY gp.ordre ASC'
