@@ -32,7 +32,7 @@ return function (App $app) {
         
         // Stockage
         $group->get('/stockage[/]', ProxyAction::class);
-        $group->post('/stockage[/]', ProxyAction::class);
+        $group->post('/stockage/upload[/]', ProxyAction::class);
         $group->delete('/stockage/{id}[/]', ProxyAction::class);
         
     })->add(new JwtAuthMiddleware());

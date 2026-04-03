@@ -5,9 +5,8 @@
       "actions": ["Read", "Write", "List", "Admin"],
       "credentials": [
         {
-<<<<<<< HEAD
-          "accessKey": "REPLACE_ME_ACCESS_KEY",
-          "secretKey": "REPLACE_ME_SECRET_KEY"
+          "accessKey": "ABCDEF",
+          "secretKey": "123456"
         }
       ]
     },
@@ -18,10 +17,6 @@
         {
           "accessKey": "REPLACE_ME_MARCEL_KEY",
           "secretKey": "REPLACE_ME_MARCEL_SECRET"
-=======
-          "accessKey": "MY_ACCESS_KEY",
-          "secretKey": "MY_SECRET_KEY"
->>>>>>> origin/feat/StockageS3
         }
       ]
     }
