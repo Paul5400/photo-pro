@@ -27,7 +27,7 @@ return function (Slim\App $app): Slim\App {
     $app->post('/auth/login/photographe[/]', PhotographeLoginAction::class);
     $app->post('/auth/signin[/]', PhotographeLoginAction::class); // Alias pour login
     $app->post('/auth/login/visiteur[/]', ConnexionVisiteurAction::class);
-    $app->post('/auth/token/refresh[/]', RefreshTokenAction::class);
+    $app->post('/auth/refresh[/]', RefreshTokenAction::class);
 
     return $app;
 };
