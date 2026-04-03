@@ -1,0 +1,17 @@
+meta {
+  name: 4-supprimer-Photo-Galerie
+  type: http
+  seq: 2
+}
+
+delete {
+  url: http://localhost:8083/galeries/776a98a2-252d-4357-9b77-f2a7664bb666/photos/550e8400-e29b-41d4-a716-446655441001
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+
