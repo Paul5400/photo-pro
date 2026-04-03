@@ -19,10 +19,10 @@ class CreateGalerieAction
         try {
             $payload = $request->getBody()->getContents();
             $data = json_decode($payload, true);
-            // $userId = $request->getAttribute('user_id');
-            // if ($userId === null) {
-            //     throw new \InvalidArgumentException('ID de photographe manquant dans la requête.');
-            // }
+            $userId = $request->getAttribute('user_id');
+            if ($userId === null) {
+                throw new \InvalidArgumentException('ID de photographe manquant dans la requête.');
+            }
 
             if (!is_array($data)) {
                 throw new \InvalidArgumentException('Corps de requête JSON invalide.');
@@ -34,7 +34,7 @@ class CreateGalerieAction
                 $data['mode_mise_en_page'] ?? '',
                 $data['statut'] ?? '',
                 new \DateTime(),
-                $data['photographe_id'] ?? '',
+                $userId ,
                 $data['description'] ?? null,
                 $data['photo_couverture_id'] ?? null,
                 isset($data['published_at']) ? new \DateTime($data['published_at']) : null,
