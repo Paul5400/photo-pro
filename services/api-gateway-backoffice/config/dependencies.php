@@ -6,6 +6,7 @@ use DI\ContainerBuilder;
 use Psr\Container\ContainerInterface;
 use GuzzleHttp\Client;
 use photopro\backoffice\api\actions\ProxyAction;
+use photopro\backoffice\api\middleware\JwtAuthMiddleware;
 
 return function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
@@ -39,6 +40,10 @@ return function (ContainerBuilder $containerBuilder) {
                 'base_uri' => getenv('STOCKAGE_URL'),
                 'timeout' => 5.0,
             ]);
+        },
+
+        JwtAuthMiddleware::class => function (ContainerInterface $c) {
+            return new JwtAuthMiddleware($c->get('auth.client'));
         },
     ]);
 };
