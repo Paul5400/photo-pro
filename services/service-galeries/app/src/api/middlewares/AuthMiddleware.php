@@ -11,7 +11,12 @@ use Firebase\JWT\Key;
 
 class AuthMiddleware
 {
-    private string $secret = "341e24419bac01ddffd0964991bc701b";
+    private string $secret;
+
+    public function __construct()
+    {
+        $this->secret = getenv('JWT_SECRET') ?: 'photopro-secret-key-dev-2026-secure';
+    }
 
     public function __invoke(Request $request, RequestHandler $handler): ResponseInterface
     {

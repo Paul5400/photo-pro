@@ -33,7 +33,9 @@ class GetPhotoUrlAction
         }
 
         try {
-            $url = $this->storageService->getPresignedUrl($cheminS3);
+            $url = str_starts_with($cheminS3, 'http')
+                ? $cheminS3
+                : $this->storageService->getPresignedUrl($cheminS3);
 
             $response->getBody()->write(json_encode(['url' => $url]));
             return $response->withHeader('Content-Type', 'application/json')->withStatus(200);

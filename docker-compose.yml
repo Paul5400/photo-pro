@@ -76,6 +76,7 @@ services:
     environment:
       - STOCKAGE_URL=http://api.stockage:80
       - FRONTOFFICE_URL=http://localhost:8080
+      - JWT_SECRET=photopro-secret-key-dev-2026-secure
     depends_on:
       - gallery.db
       - rabbitmq
