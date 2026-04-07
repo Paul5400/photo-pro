@@ -71,12 +71,21 @@ class ProxyAction
             }
             $options['multipart'] = $multipart;
         } else {
-            $body = (string)$request->getBody();
-            if ($body !== '') {
-                $options['body'] = $body;
-                $contentType = $request->getHeaderLine('Content-Type');
-                if ($contentType !== '') {
-                    $options['headers']['Content-Type'] = $contentType;
+            $parsedBody = $request->getParsedBody();
+            $contentType = $request->getHeaderLine('Content-Type');
+
+            if (!empty($parsedBody) && str_contains(strtolower($contentType), 'application/json')) {
+                $options['json'] = $parsedBody;
+                // Retire Content-Type pour que Guzzle le gère proprement avec l'option json
+                unset($options['headers']['Content-Type'], $options['headers']['content-type']);
+            } elseif (!empty($parsedBody) && is_array($parsedBody)) {
+                $options['form_params'] = $parsedBody;
+                unset($options['headers']['Content-Type'], $options['headers']['content-type']);
+            } else {
+                $request->getBody()->rewind();
+                $body = (string)$request->getBody();
+                if ($body !== '') {
+                    $options['body'] = $body;
                 }
             }
         }
