@@ -40,4 +40,16 @@ class PDOPhotoRepository implements PhotoRepositoryInterface
         $row = $stmt->fetch();
         return $row ? $row['chemin_s3'] : null;
     }
+
+    public function findByPhotographeId(string $photographeId): array
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT id, titre, mime_type, taille_mo, nom_fichier_original, chemin_s3, uploaded_at
+             FROM photo
+             WHERE photographe_id = :photographe_id
+             ORDER BY uploaded_at DESC'
+        );
+        $stmt->execute([':photographe_id' => $photographeId]);
+        return $stmt->fetchAll();
+    }
 }

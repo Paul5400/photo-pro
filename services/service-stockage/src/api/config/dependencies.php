@@ -2,6 +2,7 @@
 
 use storage\api\middlewares\JwtMiddleware;
 use storage\api\actions\stockage\GetPhotoUrlAction;
+use storage\api\actions\stockage\ListStorageAction;
 use storage\application_core\ports\PhotoRepositoryInterface;
 use storage\infrastructure\repositories\PDOPhotoRepository;
 use Aws\S3\S3Client;
@@ -85,6 +86,13 @@ return [
         return new GetPhotoUrlAction(
             $c->get(PhotoRepositoryInterface::class),
             $c->get(StorageService::class),
+            $c->get(LoggerInterface::class)
+        );
+    },
+
+    ListStorageAction::class => function (ContainerInterface $c) {
+        return new ListStorageAction(
+            $c->get(PhotoRepositoryInterface::class),
             $c->get(LoggerInterface::class)
         );
     },
