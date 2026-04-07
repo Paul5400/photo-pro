@@ -268,5 +268,29 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
 
         return $rows;
     }
+
+    public function getGaleries(?string $photographeId): array
+    {
+        if ($photographeId !== null) {
+            $stmt = $this->pdo->prepare(
+                'SELECT id, titre, description, type, statut, mode_mise_en_page,
+                        created_at, published_at, photographe_id
+                 FROM galerie
+                 WHERE photographe_id = :photographe_id
+                 ORDER BY created_at DESC'
+            );
+            $stmt->execute([':photographe_id' => $photographeId]);
+        } else {
+            $stmt = $this->pdo->prepare(
+                "SELECT id, titre, description, type, statut, mode_mise_en_page,
+                        created_at, published_at, photographe_id
+                 FROM galerie
+                 WHERE statut = 'publie' AND type = 'publique'
+                 ORDER BY published_at DESC"
+            );
+            $stmt->execute();
+        }
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
 

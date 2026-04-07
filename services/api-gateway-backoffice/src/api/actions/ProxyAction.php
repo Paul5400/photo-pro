@@ -45,6 +45,7 @@ class ProxyAction
         // --- GESTION DES FICHIERS UPLOADES (MULTIPART) ---
         $uploadedFiles = $request->getUploadedFiles();
         if (!empty($uploadedFiles)) {
+            unset($options['headers']['Content-Type'], $options['headers']['content-type']);
             $multipart = [];
 
             // Ajouter les champs du corps de la requête (parsed body)

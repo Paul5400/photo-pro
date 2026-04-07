@@ -3,6 +3,7 @@ declare(strict_types=1);
 use photopro\galeries\api\actions\galeries\AddPhotoGalerieAction;
 use photopro\galeries\api\actions\galeries\CreateGalerieAction;
 use photopro\galeries\api\actions\galeries\DeletePhotoFromGalerieAction;
+use photopro\galeries\api\actions\galeries\GetGaleriesAction;
 use photopro\galeries\api\actions\galeries\GetGalerieAction;
 use photopro\galeries\api\actions\galeries\PreviewGalerieAction;
 use photopro\galeries\api\actions\galeries\PublishGalerieAction;
@@ -21,6 +22,9 @@ return [
     // actions
     CreateGalerieAction::class => function ($c) {
         return new CreateGalerieAction($c->get(GalerieServiceInterface::class));
+    },
+    GetGaleriesAction::class => function ($c) {
+        return new GetGaleriesAction($c->get(GalerieRepositoryInterface::class));
     },
     AddPhotoGalerieAction::class => function ($c) {
         return new AddPhotoGalerieAction($c->get(GalerieServiceInterface::class));

@@ -23,4 +23,9 @@ interface GalerieRepositoryInterface
      * Inclut code_acces pour les galeries privées (à vérifier dans l'action, ne pas exposer).
      */
     public function getGalleryForVisitor(string $galleryId): array;
+
+    /**
+     * Liste les galeries.
+     */
+    public function getGaleries(?string $photographeId): array;
 }

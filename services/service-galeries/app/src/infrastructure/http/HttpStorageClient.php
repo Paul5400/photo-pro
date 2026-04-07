@@ -41,9 +41,18 @@ class HttpStorageClient implements StorageClientInterface
             $options['headers'] = ['Authorization' => "Bearer {$jwtToken}"];
         }
 
-        $response = $this->client->request('POST', '/upload', $options);
+        try {
+            $response = $this->client->request('POST', '/upload', $options);
+        } catch (\GuzzleHttp\Exception\BadResponseException $e) {
+            $body = $e->getResponse()->getBody()->getContents();
+            throw new \RuntimeException('Erreur service-stockage: ' . $body);
+        }
 
-        return json_decode($response->getBody()->getContents(), true);
+        $data = json_decode($response->getBody()->getContents(), true);
+        if (!is_array($data)) {
+            throw new \RuntimeException('Réponse invalide du service-stockage (non-JSON)');
+        }
+        return $data;
     }
 
     public function getPresignedUrl(string $photoId, ?string $jwtToken = null): string
