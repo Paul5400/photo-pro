@@ -19,9 +19,9 @@ class CreateGalerieAction
         try {
             $payload = $request->getBody()->getContents();
             $data = json_decode($payload, true);
-            $userId = $request->getAttribute('user_id');
+            $userId = $request->getAttribute('user_id') ?? $request->getHeaderLine('X-User-Id') ?: null;
             if ($userId === null) {
-                throw new \InvalidArgumentException('ID de photographe manquant dans la requête.');
+                 throw new \InvalidArgumentException('ID de photographe manquant dans la requête.');
             }
 
             if (!is_array($data)) {

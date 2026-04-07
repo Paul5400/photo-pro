@@ -1,30 +1,37 @@
 <?php
+
 declare(strict_types=1);
 
 namespace photopro\auth\api\actions\auth;
 
+use photopro\auth\core\application\ports\api\AuthnServiceInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use photopro\auth\core\application\dto\LoginDTO;
-use photopro\auth\core\application\ports\api\AuthnServiceInterface;
 
-class PhotographeLoginAction
+class RefreshTokenAction
 {
     public function __construct(
         private AuthnServiceInterface $authService
     ) {}
 
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
-        $body = $request->getParsedBody();
-        
-        $dto = new LoginDTO(
-            $body['email'] ?? '',
-            $body['password'] ?? ''
-        );
-        
+        $cookies = $request->getCookieParams();
+        $refreshToken = $cookies['refresh_token'] ?? '';
+        if ($refreshToken === '') {
+            $body = $request->getParsedBody();
+            $refreshToken = $body['refresh_token'] ?? '';
+        }
+
+        if (empty($refreshToken)) {
+            $response->getBody()->write(json_encode([
+                'error' => 'Refresh token is required'
+            ]));
+            return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
+        }
+
         try {
-            $result = $this->authService->login($dto);
+            $result = $this->authService->refreshToken($refreshToken);
             $cookie = sprintf(
                 'refresh_token=%s; Path=/auth/refresh; Max-Age=%d; HttpOnly; SameSite=Lax',
                 rawurlencode($result['refresh_token']),
@@ -36,19 +43,12 @@ class PhotographeLoginAction
                 ->withHeader('Content-Type', 'application/json')
                 ->withAddedHeader('Set-Cookie', $cookie);
         } catch (\Exception $e) {
-            $statusCode = $e->getCode();
-            // On s'assure que le code HTTP est valide pour Slim (entre 400 et 599)
-            if (!is_int($statusCode) || $statusCode < 400 || $statusCode > 549) {
-                $statusCode = 500;
-            }
-
             $response->getBody()->write(json_encode([
                 'error' => $e->getMessage()
             ]));
-            
             return $response
-                ->withHeader('Content-Type', 'application/json')
-                ->withStatus($statusCode);
+                ->withStatus($e->getCode() === 401 ? 401 : 500)
+                ->withHeader('Content-Type', 'application/json');
         }
     }
 }

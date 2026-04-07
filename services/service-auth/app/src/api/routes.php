@@ -8,6 +8,7 @@ use photopro\auth\api\actions\auth\GetPhotographeByIdAction;
 use photopro\auth\api\actions\auth\PhotographeLoginAction;
 use photopro\auth\api\actions\auth\RegisterAction;
 use photopro\auth\api\actions\auth\ConnexionVisiteurAction;
+use photopro\auth\api\actions\auth\RefreshTokenAction;
 use photopro\auth\api\middlewares\AuthnMiddleware;
 use photopro\auth\api\middlewares\AuthzPhotographeMiddleware;
 
@@ -26,6 +27,7 @@ return function (Slim\App $app): Slim\App {
     $app->post('/auth/login/photographe[/]', PhotographeLoginAction::class);
     $app->post('/auth/signin[/]', PhotographeLoginAction::class); // Alias pour login
     $app->post('/auth/login/visiteur[/]', ConnexionVisiteurAction::class);
+    $app->post('/auth/refresh[/]', RefreshTokenAction::class);
 
     return $app;
 };

@@ -13,11 +13,12 @@ return function (App $app) {
         $response->getBody()->write("Backoffice Gateway is running!");
         return $response;
     });
-    
+
     // ----- ROUTES AUTHENTIFICATION (Publiques) -----
     $app->post('/auth/register[/]', ProxyAction::class);
     $app->post('/auth/signin[/]', ProxyAction::class); // Alias pour login
     $app->post('/auth/login/photographe[/]', ProxyAction::class);
+    $app->post('/auth/refresh[/]', ProxyAction::class);
     $app->post('/auth/login/visiteur[/]', ProxyAction::class);
 
     // ----- ROUTES PROTEGEES (JWT Requis) -----
@@ -29,11 +30,13 @@ return function (App $app) {
         $group->delete('/galeries/{id}[/]', ProxyAction::class);
         $group->patch('/galeries/{id}/photos[/]', ProxyAction::class);
         $group->delete('/galeries/{id}/photos/{photoId}[/]', ProxyAction::class);
-        
+        $group->get('/galeries/{id}/preview[/]', ProxyAction::class);
+        $group->post('/galeries/{id}/publish[/]', ProxyAction::class);
+        $group->post('/galeries/{id}/unpublish[/]', ProxyAction::class);
+
         // Stockage
         $group->get('/stockage[/]', ProxyAction::class);
-        $group->post('/stockage[/]', ProxyAction::class);
+        $group->post('/stockage/upload[/]', ProxyAction::class);
         $group->delete('/stockage/{id}[/]', ProxyAction::class);
-        
     })->add(new JwtAuthMiddleware());
 };

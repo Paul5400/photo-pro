@@ -18,7 +18,7 @@ services:
       - MOCK_MODE=false
       - AUTH_URL=http://api.auth:80
       - GALLERY_URL=http://api.gallery:80
-    command: sh -c "composer install && php -S 0.0.0.0:80 -t /var/php/public"
+    command: sh -c "composer install --no-dev && php -S 0.0.0.0:80 -t /var/php/public"
 
   gateway.backoffice:
     build:
@@ -36,7 +36,7 @@ services:
       - AUTH_URL=http://api.auth:80
       - GALLERY_URL=http://api.gallery:80
       - STOCKAGE_URL=http://api.stockage:80
-    command: sh -c "composer install && php -S 0.0.0.0:80 -t /var/php/public"
+    command: sh -c "composer install --no-dev && php -S 0.0.0.0:80 -t /var/php/public"
 
   # ---------------------------------------------------------
   # Services Métier / APIs
@@ -54,7 +54,10 @@ services:
       - photopro.net
     depends_on:
       - auth.db
-    command: sh -c "composer install && php -S 0.0.0.0:80 -t /var/php/public"
+    environment:
+      - COMPOSER_PROCESS_TIMEOUT=0
+      - JWT_SECRET=photopro-secret-key-dev-2026-secure
+    command: sh -c "composer install --no-dev && php -S 0.0.0.0:80 -t /var/php/public"
 
   api.gallery:
     build:
@@ -71,7 +74,7 @@ services:
       - gallery.db
       - rabbitmq
       - S3
-    command: sh -c "composer install && php -S 0.0.0.0:80 -t /var/php/public"
+    command: sh -c "composer install --no-dev && php -S 0.0.0.0:80 -t /var/php/public"
 
   api.notifications:
     build:
@@ -88,7 +91,9 @@ services:
       - notifications.db
       - rabbitmq
       - mailpit
-    command: sh -c "composer install && php -S 0.0.0.0:80 -t /var/php/public"
+    environment:
+      - COMPOSER_PROCESS_TIMEOUT=0
+    command: sh -c "composer install --no-dev && php -S 0.0.0.0:80 -t /var/php/public"
 
   worker.notifications:
     build:
@@ -107,7 +112,7 @@ services:
       notifications.db:
         condition: service_started
     restart: unless-stopped
-    command: sh -c "composer install && php app/consumer/run.php"
+    command: sh -c "composer install --no-dev && php app/consumer/run.php"
 
   api.stockage:
     build:
@@ -122,7 +127,9 @@ services:
       - photopro.net
     depends_on:
       - S3
-    command: sh -c "composer install && php -S 0.0.0.0:80 -t /var/php/public"
+    environment:
+      - COMPOSER_PROCESS_TIMEOUT=0
+    command: sh -c "composer install --no-dev && php -S 0.0.0.0:80 -t /var/php/public"
 
   # ---------------------------------------------------------
   # Infrastructure (Services Tiers)
