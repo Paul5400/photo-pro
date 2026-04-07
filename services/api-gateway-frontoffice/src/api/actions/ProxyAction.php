@@ -35,9 +35,21 @@ class ProxyAction
         if (!empty($query)) {
             $options['query'] = $query;
         }
-        $body = (string)$request->getBody();
-        if ($body !== '') {
-            $options['body'] = $body;
+        $parsedBody = $request->getParsedBody();
+        $contentType = $request->getHeaderLine('Content-Type');
+
+        if (!empty($parsedBody) && str_contains(strtolower($contentType), 'application/json')) {
+            $options['json'] = $parsedBody;
+            unset($options['headers']['Content-Type'], $options['headers']['content-type']);
+        } elseif (!empty($parsedBody) && is_array($parsedBody)) {
+            $options['form_params'] = $parsedBody;
+            unset($options['headers']['Content-Type'], $options['headers']['content-type']);
+        } else {
+            $request->getBody()->rewind();
+            $body = (string)$request->getBody();
+            if ($body !== '') {
+                $options['body'] = $body;
+            }
         }
 
         // --- GESTION DU MODE MOCK (Défini dans le .env global) ---
