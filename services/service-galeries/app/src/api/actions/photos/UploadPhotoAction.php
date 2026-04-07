@@ -36,8 +36,10 @@ class UploadPhotoAction
             }
 
             // Appel vers service-stockage (upload S3 + INSERT stockage.db)
+            $stream = $file->getStream();
+            $stream->rewind();
             $result = $this->storageClient->upload(
-                (string) $file->getStream(),
+                (string) $stream,
                 $file->getClientFilename(),
                 $file->getClientMediaType(),
                 $titre,

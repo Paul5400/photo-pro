@@ -232,6 +232,7 @@ services:
       - photopro.net
     volumes:
       - ./infra/sql/stockage.schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ./infra/sql/stockage.seeds.sql:/docker-entrypoint-initdb.d/2-seeds.sql
 
   # ---------------------------------------------------------
   # Outils d'administration Base de données

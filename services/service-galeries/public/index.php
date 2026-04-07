@@ -2,6 +2,7 @@
 use photopro\galeries\api\actions\galeries\CreateGalerieAction;
 use photopro\galeries\api\actions\galeries\AddPhotoGalerieAction;
 use photopro\galeries\api\actions\galeries\DeletePhotoFromGalerieAction;
+use photopro\galeries\api\actions\galeries\GetGaleriesAction;
 use photopro\galeries\api\actions\galeries\GetGalerieAction;
 use photopro\galeries\api\actions\galeries\PreviewGalerieAction;
 use photopro\galeries\api\actions\galeries\PublishGalerieAction;
@@ -27,10 +28,7 @@ $app->add(function ($request, $handler) {
         ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
 });
 
-$app->get('/galeries[/]', function (Request $request, Response $response, $args) {
-    $response->getBody()->write(json_encode(['message' => 'Lister les galeries']));
-    return $response->withHeader('Content-Type', 'application/json');
-});
+$app->get('/galeries[/]', GetGaleriesAction::class);
 
 $app->get('/galeries/{id}[/]', GetGalerieAction::class);
 
