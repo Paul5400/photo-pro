@@ -4,6 +4,13 @@ namespace photopro\galeries\core\application\usecases;
 
 use photopro\galeries\core\application\ports\repositories\GalerieRepositoryInterface;
 
+/**
+ * Use case : aperçu d'une galerie pour le photographe propriétaire.
+ *
+ * Charge les données brutes (jointure galerie + photos) depuis le repository
+ * et les restructure en un tableau galerie / photos prêt pour l'API.
+ * Retourne null si la galerie n'existe pas ou n'appartient pas à l'utilisateur.
+ */
 class PreviewGalerieUseCase
 {
     private GalerieRepositoryInterface $repo;
@@ -13,6 +20,11 @@ class PreviewGalerieUseCase
         $this->repo = $repo;
     }
 
+    /**
+     * Exécute le use case.
+     *
+     * @return array|null Structure { id, titre, ..., photos[] } ou null si introuvable
+     */
     public function execute(string $galleryId, string $userId): ?array
     {
         $rows = $this->repo->getGalleryPreview($galleryId, $userId);
@@ -24,6 +36,9 @@ class PreviewGalerieUseCase
         return $this->mapGallery($rows);
     }
 
+    /**
+     * Transforme les lignes de résultat SQL en structure d'API.
+     */
     private function mapGallery(array $rows): array
     {
         $gallery = [

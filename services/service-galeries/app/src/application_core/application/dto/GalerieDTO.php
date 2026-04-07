@@ -2,6 +2,13 @@
 namespace photopro\galeries\core\application\dto;
 use Ramsey\Uuid\Uuid;
 
+/**
+ * Data Transfer Object utilisé pour créer une galerie.
+ *
+ * Transporte les données entre la couche HTTP (action) et le service applicatif.
+ * Les champs nomClient / emailClient / telephoneClient ne sont utilisés
+ * que pour les galeries de type "privée".
+ */
 class GalerieDTO
 {
     public string $titre;

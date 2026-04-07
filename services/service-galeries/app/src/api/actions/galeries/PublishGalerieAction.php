@@ -7,6 +7,18 @@ use photopro\galeries\core\application\ports\repositories\GalerieRepositoryInter
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * Action POST /galeries/{id}/publish
+ *
+ * Publie une galerie appartenant au photographe authentifié.
+ * La galerie doit contenir au moins une photo, sinon l'opération est refusée.
+ * Met à jour le statut à "publie" et enregistre la date de publication.
+ *
+ * Réponses :
+ *   200 - Galerie publiée avec succès
+ *   400 - Galerie vide, non trouvée ou n'appartenant pas à l'utilisateur
+ *   401 - Token manquant ou invalide
+ */
 class PublishGalerieAction
 {
     use JwtDecoderTrait;

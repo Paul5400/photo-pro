@@ -8,6 +8,23 @@ use photopro\galeries\core\application\ports\services\StorageClientInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * Action GET /galeries/{id}/preview
+ *
+ * Aperçu complet d'une galerie réservé au photographe propriétaire.
+ * Fournit toutes les informations de la galerie (y compris code_acces pour
+ * les galeries privées) et génère une URL pré-signée S3 pour chaque photo.
+ *
+ * Nécessite un JWT valide (route protégée par AuthMiddleware). Seul le
+ * photographe dont l'ID correspond à "photographe_id" de la galerie peut
+ * accéder au preview.
+ *
+ * Réponses :
+ *   200 - Détail complet + photos avec URLs pré-signées
+ *   401 - Token manquant ou invalide
+ *   404 - Galerie non trouvée ou non accessible par cet utilisateur
+ *   500 - Erreur serveur
+ */
 class PreviewGalerieAction
 {
     use JwtDecoderTrait;

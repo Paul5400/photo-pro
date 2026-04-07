@@ -8,6 +8,22 @@ use photopro\galeries\core\domain\entities\GaleriePhoto;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+/**
+ * Action PATCH /galeries/{id}/photos
+ *
+ * Associe une photo (déjà uploadée via service-stockage) à une galerie.
+ * La vérification de propriété est assurée par la couche repository.
+ *
+ * Corps JSON attendu :
+ *   - photo_id (UUID de la photo dans service-stockage)
+ *   - ordre    (int, position d'affichage, défaut 0)
+ *
+ * Réponses :
+ *   200 - Photo associée avec succès
+ *   400 - Corps JSON invalide ou paramètres manquants
+ *   422 - UUID invalide
+ *   500 - Erreur serveur (ex : galerie n'appartenant pas à l'utilisateur)
+ */
 class AddPhotoGalerieAction
 {
     private GalerieServiceInterface $galerieService;

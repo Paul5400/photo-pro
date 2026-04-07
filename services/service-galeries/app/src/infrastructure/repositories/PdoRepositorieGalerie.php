@@ -9,6 +9,18 @@ use photopro\galeries\core\domain\entities\GaleriePhoto;
 use Ramsey\Uuid\Uuid;
 use PDO;
 
+/**
+ * Implémentation PDO du repository galeries (PostgreSQL).
+ *
+ * Responsabilités :
+ *   - CRUD galerie + galerie_privee
+ *   - Gestion des associations galerie_photo
+ *   - Requêtes de lecture (preview, liste, détail visiteur)
+ *   - Publication / dépublication
+ *
+ * Toutes les méthodes lèvent une \Exception métier en cas d'erreur
+ * (galerie introuvable, non autorisée, galerie vide, etc.).
+ */
 class PdoRepositorieGalerie implements GalerieRepositoryInterface
 {
     private PDO $pdo;
@@ -18,6 +30,11 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
         $this->pdo = $pdo;
     }
 
+    /**
+     * Crée une galerie en base.  
+     * Si le statut est "publie" et qu'aucune date de publication n'est fournie,
+     * published_at est automatiquement fixé à maintenant.
+     */
     public function create(GalerieDTO $galerie): Galerie
     {
         Galerie::assertTypeIsValid($galerie->getType());
@@ -68,6 +85,11 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
             $photoCouvertureId,
         );
     }
+    /**
+     * Crée l'enregistrement galerie_privee associé (code d'accès + URL d'accès client).
+     * Le code est généré aléatoirement avec bin2hex(random_bytes(8)) (16 caractères hex).
+     * L'URL est construite depuis la variable d'environnement FRONTOFFICE_URL.
+     */
     public function createGaleriePrivee(
         string $galerieId,
         string $nomClient,
@@ -97,6 +119,10 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
         ]);
     }
 
+    /**
+     * Associe une photo à une galerie (INSERT dans galerie_photo).
+     * L'ordre détermine la position d'affichage dans la galerie.
+     */
     public function addPhotoToGalerie(GaleriePhoto $galeriePhoto): void
     {
         $statement = $this->pdo->prepare(
@@ -113,12 +139,23 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
         ]);
     }
 
+    /**
+     * Supprime l'association entre une photo et une galerie.
+     * Ne touche pas à la table photo ni au stockage S3.
+     */
     public function deletePhotoFromGalerie(string $photoId, string $galerieId): void
     {
         $statement = $this->pdo->prepare('DELETE FROM galerie_photo WHERE photo_id = :photo_id AND galerie_id = :galerie_id');
         $statement->execute([':photo_id' => $photoId, ':galerie_id' => $galerieId]);
     }
 
+    /**
+     * Requête de prévisualisation : retourne toutes les lignes galerie + photos
+     * pour un photographe donné. Pour les galeries privées, enrichit chaque ligne
+     * avec les données client (nom, email, code_acces, url_acces).
+     *
+     * @return array Tableau de lignes associatives ; vide si non trouvée
+     */
     public function getGalleryPreview(string $galleryId, string $userId): array
     {
         $statement = $this->pdo->prepare(
@@ -176,6 +213,15 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
         return $rows;
     }
 
+    /**
+     * Publie une galerie : passe le statut à "publie" et enregistre published_at = NOW().
+     * Conditions :
+     *   - La galerie doit contenir au moins une photo
+     *   - photographe_id doit correspondre à $userId
+     *
+     * @throws \Exception "Impossible de publier une galerie vide"
+     * @throws \Exception "Galerie non trouvée ou non autorisée"
+     */
     public function publishGallery(string $galleryId, string $userId): void
     {
         $statement = $this->pdo->prepare(
@@ -205,6 +251,12 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
         }
     }
 
+    /**
+     * Dépublie une galerie : repasse le statut à "brouillon" et vide published_at.
+     * photographe_id doit correspondre à $userId.
+     *
+     * @throws \Exception "Galerie non trouvée ou non autorisée"
+     */
     public function unpublishGallery(string $galleryId, string $userId): void
     {
         $statement = $this->pdo->prepare(
@@ -224,6 +276,14 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
         }
     }
 
+    /**
+     * Charge une galerie publiée avec ses photos pour un visiteur (non authentifié).
+     * Seules les galeries de statut "publie" sont retournées.
+     * Pour les galeries privées, enrichit les lignes avec le code_acces
+     * (la vérification du code est faite dans GetGalerieAction, pas ici).
+     *
+     * @return array Vide si la galerie n'existe pas ou n'est pas publiée
+     */
     public function getGalleryForVisitor(string $galleryId): array
     {
         // Récupérer la galerie + ses photos (statut publie uniquement)
@@ -272,6 +332,13 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
         return $rows;
     }
 
+    /**
+     * Liste les galeries.
+     *   - Avec $photographeId : toutes les galeries du photographe (brouillons inclus)
+     *   - Sans $photographeId (null) : galeries publiques publiées uniquement
+     *
+     * @return array Tableau de lignes associatives
+     */
     public function getGaleries(?string $photographeId): array
     {
         if ($photographeId !== null) {
