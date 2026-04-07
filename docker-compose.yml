@@ -18,7 +18,10 @@ services:
       - MOCK_MODE=false
       - AUTH_URL=http://api.auth:80
       - GALLERY_URL=http://api.gallery:80
-    command: sh -c "composer install --no-dev && php -S 0.0.0.0:80 -t /var/php/public"
+    depends_on:
+      - api.gallery
+      - api.auth
+    command: sh -c "composer install && php -S 0.0.0.0:80 -t /var/php/public"
 
   gateway.backoffice:
     build:
@@ -70,11 +73,15 @@ services:
     working_dir: /var/php
     networks:
       - photopro.net
+    environment:
+      - STOCKAGE_URL=http://api.stockage:80
+      - FRONTOFFICE_URL=http://localhost:8080
     depends_on:
       - gallery.db
       - rabbitmq
       - S3
-    command: sh -c "composer install --no-dev && php -S 0.0.0.0:80 -t /var/php/public"
+      - api.stockage
+    command: sh -c "composer install && php -S 0.0.0.0:80 -t /var/php/public"
 
   api.notifications:
     build:
@@ -125,11 +132,18 @@ services:
     working_dir: /var/php
     networks:
       - photopro.net
+    env_file:
+      - ./infra/env/stockage-db.env
+    environment:
+      - STOCKAGE_DB_HOST=stockage.db
+      - STOCKAGE_DB_PORT=5432
+      - STOCKAGE_DB_NAME=stockage_db
+      - STOCKAGE_DB_USER=photo_stockage
+      - STOCKAGE_DB_PASSWORD=secret
     depends_on:
       - S3
-    environment:
-      - COMPOSER_PROCESS_TIMEOUT=0
-    command: sh -c "composer install --no-dev && php -S 0.0.0.0:80 -t /var/php/public"
+      - stockage.db
+    command: sh -c "composer install --no-interaction && php -S 0.0.0.0:80 -t /var/php/public"
 
   # ---------------------------------------------------------
   # Infrastructure (Services Tiers)
@@ -208,6 +222,17 @@ services:
     volumes:
       - ./infra/sql/notifications.schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
       - ./infra/sql/notifications.data.sql:/docker-entrypoint-initdb.d/2-data.sql
+
+  stockage.db:
+    image: 'postgres:17'
+    env_file: ./infra/env/stockage-db.env
+    ports:
+      - '5436:5432'
+    networks:
+      - photopro.net
+    volumes:
+      - ./infra/sql/stockage.schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ./infra/sql/stockage.seeds.sql:/docker-entrypoint-initdb.d/2-seeds.sql
 
   # ---------------------------------------------------------
   # Outils d'administration Base de données

@@ -28,8 +28,8 @@ class AddPhotoGalerieAction
             return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
         }
 
-        if (empty($galerieId) || empty($data['photo_id'])) {
-            $response->getBody()->write(json_encode(['error' => 'galerie id et photo_id sont requis']));
+        if (empty($galerieId) || empty($data['photo_id']) || empty($data['url'])) {
+            $response->getBody()->write(json_encode(['error' => 'galerie id, photo_id et url sont requis']));
             return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
         }
 
@@ -38,7 +38,8 @@ class AddPhotoGalerieAction
                 Uuid::fromString($galerieId),
                 Uuid::fromString($data['photo_id']),
                 $data['ordre'] ?? 0,
-                new DateTime()
+                new DateTime(),
+                $data['url']
             );
 
             $this->galerieService->addPhotoToGalerie($galeriePhoto);

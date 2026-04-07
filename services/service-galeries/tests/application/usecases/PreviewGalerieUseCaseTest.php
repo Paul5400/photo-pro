@@ -37,6 +37,7 @@ class PreviewGalerieUseCaseTest extends TestCase
         $this->assertNotNull($result);
         $this->assertEquals('gal1', $result['id']);
         $this->assertCount(1, $result['photos']);
+        $this->assertEquals('url1', $result['photos'][0]['url']);
     }
 
     public function testPreviewReturnsNullIfNotFound()

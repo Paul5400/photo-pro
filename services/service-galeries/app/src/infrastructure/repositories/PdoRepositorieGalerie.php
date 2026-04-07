@@ -76,7 +76,8 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
     ): void {
         $id = Uuid::uuid4();
         $code = bin2hex(random_bytes(8));
-        $url = "https://site.com/galerie/" . $code;
+        $base = rtrim(getenv('FRONTOFFICE_URL') ?: 'http://localhost:8080', '/');
+        $url = $base . '/galeries/' . $galerieId . '?code_acces=' . $code;
 
         $stmt = $this->pdo->prepare(
             'INSERT INTO galerie_privee
@@ -99,8 +100,8 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
     public function addPhotoToGalerie(GaleriePhoto $galeriePhoto): void
     {
         $statement = $this->pdo->prepare(
-            'INSERT INTO galerie_photo (galerie_id, photo_id, ordre, added_at)
-             VALUES (:galerie_id, :photo_id, :ordre, :added_at)'
+            'INSERT INTO galerie_photo (galerie_id, photo_id, ordre, added_at, url)
+             VALUES (:galerie_id, :photo_id, :ordre, :added_at, :url)'
         );
 
         $statement->execute([
@@ -108,6 +109,7 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
             ':photo_id' => $galeriePhoto->getPhotoId()->toString(),
             ':ordre' => $galeriePhoto->getOrdre(),
             ':added_at' => $galeriePhoto->getAddedAt()->format('Y-m-d H:i:s'),
+            ':url' => $galeriePhoto->getUrl(),
         ]);
     }
 
@@ -130,10 +132,11 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
                 g.created_at,
                 g.published_at,
                 gp.photo_id,
-                NULL AS url,
+                gp.url AS url,
                 NULL AS photo_titre
             FROM galerie g
             LEFT JOIN galerie_photo gp ON g.id::uuid = gp.galerie_id
+            LEFT JOIN photo p ON gp.photo_id = p.id::uuid
             WHERE g.id = :gallery_id 
             AND g.photographe_id = :user_id
             ORDER BY gp.ordre ASC'
@@ -219,5 +222,77 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
         if ($statement->rowCount() === 0) {
             throw new \Exception("Galerie non trouvée ou non autorisée");
         }
+    }
+
+    public function getGalleryForVisitor(string $galleryId): array
+    {
+        // Récupérer la galerie + ses photos (statut publie uniquement)
+        $statement = $this->pdo->prepare(
+            'SELECT
+                g.id AS galerie_id,
+                g.titre,
+                g.description,
+                g.type,
+                g.statut,
+                g.mode_mise_en_page,
+                g.published_at,
+                p.id AS photo_id,
+                p.chemin_s3,
+                p.titre AS photo_titre
+            FROM galerie g
+            LEFT JOIN galerie_photo gp ON g.id::uuid = gp.galerie_id
+            LEFT JOIN photo p ON gp.photo_id = p.id::uuid
+            WHERE g.id = :gallery_id
+            AND g.statut = \'publie\'
+            ORDER BY gp.ordre ASC'
+        );
+
+        $statement->execute([':gallery_id' => $galleryId]);
+        $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        if (empty($rows)) {
+            return [];
+        }
+
+        // Si galerie privée, récupérer le code_acces pour vérification dans l'action
+        $type = strtolower(trim($rows[0]['type']));
+        if (in_array($type, ['privée', 'privee', 'private'], true)) {
+            $privStatement = $this->pdo->prepare(
+                'SELECT code_acces FROM galerie_privee WHERE galerie_id = :gallery_id'
+            );
+            $privStatement->execute([':gallery_id' => $galleryId]);
+            $privData = $privStatement->fetch(PDO::FETCH_ASSOC);
+
+            foreach ($rows as &$row) {
+                $row['code_acces'] = $privData['code_acces'] ?? null;
+            }
+            unset($row);
+        }
+
+        return $rows;
+    }
+
+    public function getGaleries(?string $photographeId): array
+    {
+        if ($photographeId !== null) {
+            $stmt = $this->pdo->prepare(
+                'SELECT id, titre, description, type, statut, mode_mise_en_page,
+                        created_at, published_at, photographe_id
+                 FROM galerie
+                 WHERE photographe_id = :photographe_id
+                 ORDER BY created_at DESC'
+            );
+            $stmt->execute([':photographe_id' => $photographeId]);
+        } else {
+            $stmt = $this->pdo->prepare(
+                "SELECT id, titre, description, type, statut, mode_mise_en_page,
+                        created_at, published_at, photographe_id
+                 FROM galerie
+                 WHERE statut = 'publie' AND type = 'publique'
+                 ORDER BY published_at DESC"
+            );
+            $stmt->execute();
+        }
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

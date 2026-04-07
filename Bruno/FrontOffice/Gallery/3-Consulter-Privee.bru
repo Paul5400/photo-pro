@@ -1,0 +1,20 @@
+meta {
+  name: 3-Consulter-Galerie-Privee
+  type: http
+  seq: 3
+}
+
+get {
+  url: http://localhost:8080/galeries/{{galerie_id}}?code_acces={{code_acces}}
+  body: none
+  auth: none
+}
+
+params:query {
+  code_acces: {{code_acces}}
+}
+
+vars:pre-request {
+  code_acces: a1b2c3d4e5f6a7b8
+  galerie_id: 20000001-0000-4000-8000-000000000003
+}

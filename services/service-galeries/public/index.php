@@ -3,10 +3,13 @@
 use photopro\galeries\api\actions\galeries\CreateGalerieAction;
 use photopro\galeries\api\actions\galeries\AddPhotoGalerieAction;
 use photopro\galeries\api\actions\galeries\DeletePhotoFromGalerieAction;
+use photopro\galeries\api\actions\galeries\GetGaleriesAction;
+use photopro\galeries\api\actions\galeries\GetGalerieAction;
 use photopro\galeries\api\actions\galeries\PreviewGalerieAction;
 use photopro\galeries\api\actions\galeries\PublishGalerieAction;
 use photopro\galeries\api\actions\galeries\UnpublishGalerieAction;
-use photopro\galeries\api\middlewares\AuthMiddleware;
+use photopro\galeries\api\actions\photos\UploadPhotoAction;
+use photopro\galeries\app\api\middlewares\AuthMiddleware;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -26,15 +29,9 @@ $app->add(function ($request, $handler) {
         ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
 });
 
-$app->get('/galeries[/]', function (Request $request, Response $response, $args) {
-    $response->getBody()->write(json_encode(['message' => 'Lister les galeries']));
-    return $response->withHeader('Content-Type', 'application/json');
-});
+$app->get('/galeries[/]', GetGaleriesAction::class);
 
-$app->get('/galeries/{id}[/]', function (Request $request, Response $response, $args) {
-    $response->getBody()->write(json_encode(['message' => 'Afficher la galerie ' . $args['id']]));
-    return $response->withHeader('Content-Type', 'application/json');
-});
+$app->get('/galeries/{id}[/]', GetGalerieAction::class);
 
 $app->get('/', function (Request $request, Response $response, $args) {
     $response->getBody()->write("Hello from service-galeries API");
@@ -53,7 +50,6 @@ $app->post('/galeries/{id}/publish', PublishGalerieAction::class)
     ->add(new AuthMiddleware());
 $app->post('/galeries/{id}/unpublish', UnpublishGalerieAction::class)
     ->add(new AuthMiddleware());
-
 
 
 $app->run();

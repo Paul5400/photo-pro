@@ -1,0 +1,15 @@
+meta {
+  name: 7-Depublier-Galerie
+  type: http
+  seq: 7
+}
+
+post {
+  url: http://localhost:8081/galeries/{{galerie_id}}/unpublish
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

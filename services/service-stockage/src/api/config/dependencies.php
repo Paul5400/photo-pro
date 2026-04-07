@@ -1,6 +1,9 @@
 <?php
 
 use storage\api\middlewares\JwtMiddleware;
+use storage\api\actions\stockage\GetPhotoUrlAction;
+use storage\application_core\ports\PhotoRepositoryInterface;
+use storage\infrastructure\repositories\PDOPhotoRepository;
 use Aws\S3\S3Client;
 use storage\infrastructure\storage\StorageService;
 use Psr\Container\ContainerInterface;
@@ -54,5 +57,35 @@ return [
         $bucket = $_ENV['S3_BUCKET'] ?? 'photo-pro';
         $logger = $c->get(LoggerInterface::class);
         return new StorageService($s3Client, $externalS3Client, $bucket, $logger);
+    },
+
+    'pdo.stockage' => function (ContainerInterface $c) {
+        $host   = $_ENV['STOCKAGE_DB_HOST']     ?? 'stockage.db';
+        $port   = $_ENV['STOCKAGE_DB_PORT']     ?? '5432';
+        $dbname = $_ENV['STOCKAGE_DB_NAME']     ?? 'stockage_db';
+        $user   = $_ENV['STOCKAGE_DB_USER']     ?? 'photo_stockage';
+        $pass   = $_ENV['STOCKAGE_DB_PASSWORD'] ?? 'secret';
+
+        return new \PDO(
+            "pgsql:host={$host};port={$port};dbname={$dbname}",
+            $user,
+            $pass,
+            [
+                \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
+                \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+            ]
+        );
+    },
+
+    PhotoRepositoryInterface::class => function (ContainerInterface $c) {
+        return new PDOPhotoRepository($c->get('pdo.stockage'));
+    },
+
+    GetPhotoUrlAction::class => function (ContainerInterface $c) {
+        return new GetPhotoUrlAction(
+            $c->get(PhotoRepositoryInterface::class),
+            $c->get(StorageService::class),
+            $c->get(LoggerInterface::class)
+        );
     },
 ];

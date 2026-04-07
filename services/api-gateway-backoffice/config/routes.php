@@ -34,6 +34,9 @@ return function (App $app) {
         $group->post('/galeries/{id}/publish[/]', ProxyAction::class);
         $group->post('/galeries/{id}/unpublish[/]', ProxyAction::class);
 
+        // Photos
+        $group->post('/photos[/]', ProxyAction::class);
+
         // Stockage
         $group->get('/stockage[/]', ProxyAction::class);
         $group->post('/stockage/upload[/]', ProxyAction::class);
