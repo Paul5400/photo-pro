@@ -1,7 +1,11 @@
 <?php
 
 use photopro\galeries\core\application\ports\repositories\GalerieRepositoryInterface;
+use photopro\galeries\core\application\ports\repositories\PhotoRepositoryInterface;
+use photopro\galeries\core\application\ports\services\StorageClientInterface;
 use photopro\galeries\infra\repositories\PdoRepositorieGalerie;
+use photopro\galeries\infra\repositories\PdoPhotoRepository;
+use photopro\galeries\infra\http\HttpStorageClient;
 
 
 return [
@@ -22,7 +26,14 @@ return [
 
         return $pdo;
     },
-    //reposository
     GalerieRepositoryInterface::class => static function ($c) {
         return new PdoRepositorieGalerie($c->get('pdo'));
-    },];
+    },
+    PhotoRepositoryInterface::class => static function ($c) {
+        return new PdoPhotoRepository($c->get('pdo'));
+    },
+    StorageClientInterface::class => static function ($c) {
+        $storageUrl = $_ENV['STOCKAGE_URL'] ?? getenv('STOCKAGE_URL') ?? 'http://api.stockage:80';
+        return new HttpStorageClient($storageUrl);
+    },
+];

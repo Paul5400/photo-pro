@@ -1,17 +1,21 @@
 meta {
-  name: "Upload Image"
-  type: "http"
+  name: Upload Image
+  type: http
   seq: 1
 }
 
 post {
-  url: {{base_url_stockage}}/images
+  url: {{base_url_stockage}}/upload
   body: multipartForm
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
 }
 
 body:multipart-form {
-  image: @file(/home/paul/Documents/PhotoPro/api_tests/test_image.png)
+  image: @file()
 }
 
 docs {

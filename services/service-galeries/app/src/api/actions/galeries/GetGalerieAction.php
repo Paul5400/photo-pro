@@ -2,15 +2,13 @@
 
 namespace photopro\galeries\api\actions\galeries;
 
-use photopro\galeries\api\traits\JwtDecoderTrait;
 use photopro\galeries\core\application\ports\repositories\GalerieRepositoryInterface;
 use photopro\galeries\core\application\ports\services\StorageClientInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class PreviewGalerieAction
+class GetGalerieAction
 {
-    use JwtDecoderTrait;
     public function __construct(
         private GalerieRepositoryInterface $galerieRepository,
         private StorageClientInterface     $storageClient
@@ -19,25 +17,33 @@ class PreviewGalerieAction
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
     {
         try {
-            $galleryId = $args['id'];
+            $galleryId  = $args['id'];
+            $queryParams = $request->getQueryParams();
+            $codeAcces  = $queryParams['code_acces'] ?? null;
 
-            $authHeader = $request->getHeaderLine('Authorization');
-            $jwtToken   = str_starts_with($authHeader, 'Bearer ') ? substr($authHeader, 7) : '';
-            $userId     = $this->extractUserIdFromJwt($jwtToken);
-
-            if (!$userId) {
-                $response->getBody()->write(json_encode(['error' => 'Token invalide']));
-                return $response->withStatus(401)->withHeader('Content-Type', 'application/json');
-            }
-
-            $rows = $this->galerieRepository->getGalleryPreview($galleryId, $userId);
+            $rows = $this->galerieRepository->getGalleryForVisitor($galleryId);
 
             if (empty($rows)) {
-                $response->getBody()->write(json_encode(['error' => 'Galerie non trouvée']));
+                $response->getBody()->write(json_encode(['error' => 'Galerie non trouvée ou non publiée']));
                 return $response->withStatus(404)->withHeader('Content-Type', 'application/json');
             }
 
-            // Construire la réponse structurée
+            // Vérification code d'accès pour galeries privées
+            $type = strtolower(trim($rows[0]['type']));
+            if (in_array($type, ['privée', 'privee', 'private'], true)) {
+                if (empty($codeAcces)) {
+                    $response->getBody()->write(json_encode(['error' => 'Code d\'accès requis pour cette galerie privée']));
+                    return $response->withStatus(401)->withHeader('Content-Type', 'application/json');
+                }
+
+                $storedCode = $rows[0]['code_acces'] ?? null;
+                if ($storedCode === null || !hash_equals($storedCode, $codeAcces)) {
+                    $response->getBody()->write(json_encode(['error' => 'Code d\'accès invalide']));
+                    return $response->withStatus(403)->withHeader('Content-Type', 'application/json');
+                }
+            }
+
+            // Construire la réponse
             $first  = $rows[0];
             $result = [
                 'galerie' => [
@@ -45,29 +51,18 @@ class PreviewGalerieAction
                     'titre'            => $first['titre'],
                     'description'      => $first['description'],
                     'type'             => $first['type'],
-                    'statut'           => $first['statut'],
                     'mode_mise_en_page' => $first['mode_mise_en_page'],
-                    'created_at'       => $first['created_at'],
                     'published_at'     => $first['published_at'],
                 ],
-                'photos'  => [],
+                'photos' => [],
             ];
 
-            // Données accès galerie privée
-            if (isset($first['code_acces'])) {
-                $result['galerie']['nom_client']       = $first['nom_client'];
-                $result['galerie']['email_client']     = $first['email_client'];
-                $result['galerie']['telephone_client'] = $first['telephone_client'];
-                $result['galerie']['code_acces']       = $first['code_acces'];
-                $result['galerie']['url_acces']        = $first['url_acces'];
-            }
-
-            // Générer une URL pré-signée par photo
+            // Générer une URL pré-signée par photo (jwtToken null = appel interne)
             foreach ($rows as $row) {
                 if (empty($row['photo_id'])) {
                     continue;
                 }
-                $url = $this->storageClient->getPresignedUrl($row['photo_id'], $jwtToken);
+                $url = $this->storageClient->getPresignedUrl($row['photo_id']);
                 $result['photos'][] = [
                     'id'    => $row['photo_id'],
                     'titre' => $row['photo_titre'],
@@ -83,5 +78,4 @@ class PreviewGalerieAction
             return $response->withStatus(500)->withHeader('Content-Type', 'application/json');
         }
     }
-
 }

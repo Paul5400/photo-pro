@@ -2,42 +2,41 @@
 
 namespace photopro\galeries\api\actions\galeries;
 
+use photopro\galeries\api\traits\JwtDecoderTrait;
+use photopro\galeries\core\application\ports\repositories\GalerieRepositoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class PublishGalerieAction
 {
-    private $useCase;
+    use JwtDecoderTrait;
+    public function __construct(
+        private GalerieRepositoryInterface $galerieRepository
+    ) {}
 
-    public function __construct($useCase)
-    {
-        $this->useCase = $useCase;
-    }
-
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
     {
         try {
             $galleryId = $args['id'];
-            $user = $request->getAttribute('user');
-            $userId = $user->id ?? $request->getHeaderLine('X-User-Id');
 
-            $this->useCase->execute($galleryId, $userId);
+            $authHeader = $request->getHeaderLine('Authorization');
+            $jwtToken   = str_starts_with($authHeader, 'Bearer ') ? substr($authHeader, 7) : '';
+            $userId     = $this->extractUserIdFromJwt($jwtToken);
 
-            $response->getBody()->write(json_encode([
-                'message' => 'Galerie publiée avec succès'
-            ]));
+            if (!$userId) {
+                $response->getBody()->write(json_encode(['error' => 'Token invalide']));
+                return $response->withStatus(401)->withHeader('Content-Type', 'application/json');
+            }
 
-            return $response->withStatus(200)
-                            ->withHeader('Content-Type', 'application/json');
+            $this->galerieRepository->publishGallery($galleryId, $userId);
 
-        } catch (\Exception $e) {
+            $response->getBody()->write(json_encode(['message' => 'Galerie publiée avec succès']));
+            return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
 
-            $response->getBody()->write(json_encode([
-                'error' => $e->getMessage()
-            ]));
-
-            return $response->withStatus(400)
-                            ->withHeader('Content-Type', 'application/json');
+        } catch (\Throwable $e) {
+            $response->getBody()->write(json_encode(['error' => $e->getMessage()]));
+            return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
         }
     }
+
 }
