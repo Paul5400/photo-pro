@@ -1,4 +1,5 @@
 <?php
+
 namespace photopro\galeries\infra\repositories;
 
 use photopro\galeries\core\application\ports\repositories\GalerieRepositoryInterface;
@@ -71,7 +72,8 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
         string $galerieId,
         string $nomClient,
         string $emailClient,
-        ?string $telephone):void{
+        ?string $telephone
+    ): void {
         $id = Uuid::uuid4();
         $code = bin2hex(random_bytes(8));
         $base = rtrim(getenv('FRONTOFFICE_URL') ?: 'http://localhost:8080', '/');
@@ -111,7 +113,7 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
         ]);
     }
 
-    public function deletePhotoFromGalerie(string $photoId,string $galerieId): void
+    public function deletePhotoFromGalerie(string $photoId, string $galerieId): void
     {
         $statement = $this->pdo->prepare('DELETE FROM galerie_photo WHERE photo_id = :photo_id AND galerie_id = :galerie_id');
         $statement->execute([':photo_id' => $photoId, ':galerie_id' => $galerieId]);
@@ -294,4 +296,3 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
-
