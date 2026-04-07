@@ -3,17 +3,11 @@ declare(strict_types=1);
 use photopro\galeries\api\actions\galeries\AddPhotoGalerieAction;
 use photopro\galeries\api\actions\galeries\CreateGalerieAction;
 use photopro\galeries\api\actions\galeries\DeletePhotoFromGalerieAction;
-<<<<<<< HEAD
-use photopro\galeries\api\actions\galeries\PreviewGalerieAction;
-use photopro\galeries\api\actions\galeries\PublishGalerieAction;
-use photopro\galeries\api\actions\galeries\UnpublishGalerieAction;
-=======
 use photopro\galeries\api\actions\galeries\GetGalerieAction;
 use photopro\galeries\api\actions\galeries\PreviewGalerieAction;
 use photopro\galeries\api\actions\galeries\PublishGalerieAction;
 use photopro\galeries\api\actions\galeries\UnpublishGalerieAction;
 use photopro\galeries\api\actions\photos\UploadPhotoAction;
->>>>>>> feat/service-stockage-addbd
 use photopro\galeries\core\application\ports\repositories\GalerieRepositoryInterface;
 use photopro\galeries\core\application\ports\repositories\PhotoRepositoryInterface;
 use photopro\galeries\core\application\ports\services\GalerieServiceInterface;
