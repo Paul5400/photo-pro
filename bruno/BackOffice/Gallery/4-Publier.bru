@@ -5,12 +5,11 @@ meta {
 }
 
 post {
-  url: {{base_url_gallery}}/galeries/{{galerie_id}}/publish
+  url: http://localhost:8081/galeries/{{galerie_id}}/publish
   body: none
-  auth: none
+  auth: bearer
 }
 
-headers {
-  Authorization: Bearer {{jwt_token}}
-  X-User-Id: ffffffff-0000-0000-0000-000000000001
+auth:bearer {
+  token: {{token}}
 }

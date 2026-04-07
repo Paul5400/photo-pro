@@ -1,11 +1,11 @@
 meta {
   name: 4-Ajouter-Photo-Galerie
   type: http
-  seq: 2
+  seq: 1
 }
 
 patch {
-  url: http://localhost:8083/galeries/04a7e6c7-385c-4a8f-a080-40343d454d91/photos
+  url: http://localhost:8081/galeries/{{galerie_id}}/photos
   body: json
   auth: bearer
 }
@@ -16,6 +16,7 @@ auth:bearer {
 
 body:json {
   {
-  "photo_id":"550e8400-e29b-41d4-a716-446655441004",
+    "photo_id": "{{photo_id}}"
+  }
 }
-}
+

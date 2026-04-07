@@ -5,12 +5,11 @@ meta {
 }
 
 get {
-  url: {{base_url_gallery}}/galeries/{{galerie_id}}/preview
+  url: http://localhost:8081/galeries/{{galerie_id}}/preview
   body: none
-  auth: none
+  auth: bearer
 }
 
-headers {
-  Authorization: Bearer {{jwt_token}}
-  X-User-Id: ffffffff-0000-0000-0000-000000000001
+auth:bearer {
+  token: {{token}}
 }

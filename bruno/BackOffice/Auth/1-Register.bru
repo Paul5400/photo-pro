@@ -20,3 +20,10 @@ body:json {
     "description": "Un photographe de test"
   }
 }
+
+script:post-response {
+  if (res.status === 201) {
+    bru.setEnvVar("token", res.getBody().token);
+    bru.setEnvVar("photographe_id", res.getBody().photographe.id);
+  }
+}

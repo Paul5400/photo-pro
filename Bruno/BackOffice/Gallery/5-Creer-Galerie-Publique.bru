@@ -1,0 +1,32 @@
+meta {
+  name: 5-Creer-Galerie-Publique
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:8081/galeries
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "titre": "Mariage Sophie",
+    "type": "publique",
+    "mode_mise_en_page": "grille",
+    "statut": "brouillon",
+    "photographe_id": "{{photographe_id}}",
+    "description": "Photos du mariage"
+  }
+}
+
+script:post-response {
+  if (res.status === 201) {
+    bru.setEnvVar("galerie_id", res.getBody().galerie.id);
+  }
+}
