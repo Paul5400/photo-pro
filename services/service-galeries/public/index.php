@@ -1,4 +1,5 @@
 <?php
+
 use photopro\galeries\api\actions\galeries\CreateGalerieAction;
 use photopro\galeries\api\actions\galeries\AddPhotoGalerieAction;
 use photopro\galeries\api\actions\galeries\DeletePhotoFromGalerieAction;
@@ -46,11 +47,11 @@ $app->patch('/galeries/{id}/photos', AddPhotoGalerieAction::class)
     ->add(new AuthMiddleware());
 $app->delete('/galeries/{id}/photos/{photoId}', DeletePhotoFromGalerieAction::class)
     ->add(new AuthMiddleware());
-$app->get('/galeries/{id}/preview',PreviewGalerieAction::class )
+$app->get('/galeries/{id}/preview', PreviewGalerieAction::class)
     ->add(new AuthMiddleware());
-$app->post('/galeries/{id}/publish',PublishGalerieAction::class)
+$app->post('/galeries/{id}/publish', PublishGalerieAction::class)
     ->add(new AuthMiddleware());
-$app->post('/galeries/{id}/unpublish',UnpublishGalerieAction::class)
+$app->post('/galeries/{id}/unpublish', UnpublishGalerieAction::class)
     ->add(new AuthMiddleware());
 
 

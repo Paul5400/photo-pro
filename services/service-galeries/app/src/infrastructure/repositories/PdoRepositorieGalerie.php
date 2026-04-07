@@ -1,4 +1,5 @@
 <?php
+
 namespace photopro\galeries\infra\repositories;
 
 use photopro\galeries\core\application\ports\repositories\GalerieRepositoryInterface;
@@ -71,10 +72,11 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
         string $galerieId,
         string $nomClient,
         string $emailClient,
-        ?string $telephone):void{
+        ?string $telephone
+    ): void {
         $id = Uuid::uuid4();
         $code = bin2hex(random_bytes(8));
-        $url = "https://site.com/galerie/".$code;
+        $url = "https://site.com/galerie/" . $code;
 
         $stmt = $this->pdo->prepare(
             'INSERT INTO galerie_privee
@@ -109,7 +111,7 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
         ]);
     }
 
-    public function deletePhotoFromGalerie(string $photoId,string $galerieId): void
+    public function deletePhotoFromGalerie(string $photoId, string $galerieId): void
     {
         $statement = $this->pdo->prepare('DELETE FROM galerie_photo WHERE photo_id = :photo_id AND galerie_id = :galerie_id');
         $statement->execute([':photo_id' => $photoId, ':galerie_id' => $galerieId]);
@@ -150,7 +152,7 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
 
         $type = strtolower(trim($rows[0]['type']));
         if (in_array($type, ['privée', 'privee', 'private'], true)) {
-            $privateStatement = $this->pdoGaleriePrivee->prepare(
+            $privateStatement = $this->pdo->prepare(
                 'SELECT nom_client, email_client, telephone_client, code_acces, url_acces
                  FROM galerie_privee
                  WHERE galerie_id = :gallery_id'
@@ -219,4 +221,3 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
         }
     }
 }
-
