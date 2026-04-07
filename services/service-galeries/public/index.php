@@ -9,7 +9,7 @@ use photopro\galeries\api\actions\galeries\PreviewGalerieAction;
 use photopro\galeries\api\actions\galeries\PublishGalerieAction;
 use photopro\galeries\api\actions\galeries\UnpublishGalerieAction;
 use photopro\galeries\api\actions\photos\UploadPhotoAction;
-use photopro\galeries\app\api\middlewares\AuthMiddleware;
+use photopro\galeries\api\middlewares\AuthMiddleware;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
