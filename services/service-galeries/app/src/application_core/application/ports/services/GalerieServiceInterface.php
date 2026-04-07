@@ -8,7 +8,7 @@ interface GalerieServiceInterface
 {
     public function createGalerie(GalerieDTO $galerieDTO): Galerie;
 
-    public function addPhotoToGalerie(GaleriePhoto $galeriePhoto): void;
+    public function addPhotoToGalerie(GaleriePhoto $galeriePhoto, string $photographeId): void;
 
-    public function deletePhotoFromGalerie(string $galerieId, string $photoId): void;
+    public function deletePhotoFromGalerie(string $galerieId, string $photoId, string $photographeId): void;
 }

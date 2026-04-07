@@ -15,6 +15,12 @@ class DeletePhotoFromGalerieAction
     {
         $galerieId = $args['id'] ?? $args['galerieId'] ?? null;
         $photoId = $args['photoId'] ?? null;
+        $photographeId = $request->getAttribute('user_id');
+
+        if (!$photographeId) {
+            $response->getBody()->write(json_encode(['error' => 'Identité utilisateur manquante']));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
+        }
 
         if (empty($galerieId) || empty($photoId)) {
             $response->getBody()->write(json_encode(['error' => 'galerie id and photoId are required']));
@@ -22,7 +28,7 @@ class DeletePhotoFromGalerieAction
         }
 
         try {
-            $this->galerieService->deletePhotoFromGalerie($galerieId, $photoId);
+            $this->galerieService->deletePhotoFromGalerie($galerieId, $photoId, $photographeId);
             $response->getBody()->write(json_encode(['message' => 'Photo deleted from galerie successfully']));
             return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
         } catch (\Exception $e) {

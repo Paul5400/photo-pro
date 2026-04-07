@@ -21,7 +21,12 @@ class AddPhotoGalerieAction
     {
         $galerieId = $args['id'] ?? $args['galerieId'] ?? null;
         $data = $request->getParsedBody();
-      
+        $photographeId = $request->getAttribute('user_id');
+
+        if (!$photographeId) {
+            $response->getBody()->write(json_encode(['error' => 'Identité utilisateur manquante']));
+            return $response->withStatus(401)->withHeader('Content-Type', 'application/json');
+        }
 
         if (!is_array($data)) {
             $response->getBody()->write(json_encode(['error' => 'Requête JSON invalide']));
@@ -41,7 +46,7 @@ class AddPhotoGalerieAction
                 new DateTime()
             );
 
-            $this->galerieService->addPhotoToGalerie($galeriePhoto);
+            $this->galerieService->addPhotoToGalerie($galeriePhoto, $photographeId);
 
             $response->getBody()->write(json_encode(['message' => 'Photo ajoutée à la galerie avec succès']));
             return $response->withStatus(200)->withHeader('Content-Type', 'application/json');

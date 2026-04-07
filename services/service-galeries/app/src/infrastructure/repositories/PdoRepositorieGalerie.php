@@ -94,8 +94,19 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
         ]);
     }
 
-    public function addPhotoToGalerie(GaleriePhoto $galeriePhoto): void
+    public function addPhotoToGalerie(GaleriePhoto $galeriePhoto, string $photographeId): void
     {
+        $check = $this->pdo->prepare(
+            'SELECT COUNT(*) FROM galerie WHERE id = :galerie_id AND photographe_id = :photographe_id'
+        );
+        $check->execute([
+            ':galerie_id'     => $galeriePhoto->getGalerieId()->toString(),
+            ':photographe_id' => $photographeId,
+        ]);
+        if ((int) $check->fetchColumn() === 0) {
+            throw new \Exception("Galerie non trouvée ou non autorisée");
+        }
+
         $statement = $this->pdo->prepare(
             'INSERT INTO galerie_photo (galerie_id, photo_id, ordre, added_at)
              VALUES (:galerie_id, :photo_id, :ordre, :added_at)'
@@ -103,16 +114,32 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
 
         $statement->execute([
             ':galerie_id' => $galeriePhoto->getGalerieId()->toString(),
-            ':photo_id' => $galeriePhoto->getPhotoId()->toString(),
-            ':ordre' => $galeriePhoto->getOrdre(),
-            ':added_at' => $galeriePhoto->getAddedAt()->format('Y-m-d H:i:s'),
+            ':photo_id'   => $galeriePhoto->getPhotoId()->toString(),
+            ':ordre'      => $galeriePhoto->getOrdre(),
+            ':added_at'   => $galeriePhoto->getAddedAt()->format('Y-m-d H:i:s'),
         ]);
     }
 
-    public function deletePhotoFromGalerie(string $photoId,string $galerieId): void
+    public function deletePhotoFromGalerie(string $photoId, string $galerieId, string $photographeId): void
     {
-        $statement = $this->pdo->prepare('DELETE FROM galerie_photo WHERE photo_id = :photo_id AND galerie_id = :galerie_id');
-        $statement->execute([':photo_id' => $photoId, ':galerie_id' => $galerieId]);
+        $statement = $this->pdo->prepare(
+            'DELETE FROM galerie_photo
+             WHERE photo_id = :photo_id
+             AND galerie_id = :galerie_id
+             AND EXISTS (
+                 SELECT 1 FROM galerie
+                 WHERE id = :galerie_check AND photographe_id = :photographe_id
+             )'
+        );
+        $statement->execute([
+            ':photo_id'       => $photoId,
+            ':galerie_id'     => $galerieId,
+            ':galerie_check'  => $galerieId,
+            ':photographe_id' => $photographeId,
+        ]);
+        if ($statement->rowCount() === 0) {
+            throw new \Exception("Photo non trouvée dans la galerie ou non autorisé");
+        }
     }
 
     public function getGalleryPreview(string $galleryId, string $userId): array
@@ -231,6 +258,114 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
         $row = $statement->fetch(\PDO::FETCH_ASSOC);
 
         return $row ?: ['titre' => '', 'email_client' => null, 'url_acces' => null, 'code_acces' => null];
+    }
+
+    public function getGalerieForComment(string $galerieId): ?array
+    {
+        $statement = $this->pdo->prepare(
+            'SELECT g.statut, g.type, gp.code_acces
+             FROM galerie g
+             LEFT JOIN galerie_privee gp ON gp.galerie_id = g.id
+             WHERE g.id = :galerie_id'
+        );
+        $statement->execute([':galerie_id' => $galerieId]);
+        $row = $statement->fetch(\PDO::FETCH_ASSOC);
+
+        return $row ?: null;
+    }
+
+    public function isPhotoInGalerie(string $galerieId, string $photoId): bool
+    {
+        $statement = $this->pdo->prepare(
+            'SELECT COUNT(*) FROM galerie_photo WHERE galerie_id = :galerie_id AND photo_id = :photo_id'
+        );
+        $statement->execute([':galerie_id' => $galerieId, ':photo_id' => $photoId]);
+
+        return (int) $statement->fetchColumn() > 0;
+    }
+
+    public function addCommentaire(string $galerieId, string $photoId, ?string $auteur, string $contenu): string
+    {
+        $statement = $this->pdo->prepare(
+            'INSERT INTO photo_commentaire (galerie_id, photo_id, auteur, contenu)
+             VALUES (:galerie_id, :photo_id, :auteur, :contenu)
+             RETURNING id'
+        );
+        $statement->execute([
+            ':galerie_id' => $galerieId,
+            ':photo_id'   => $photoId,
+            ':auteur'     => $auteur,
+            ':contenu'    => $contenu,
+        ]);
+
+        return (string) $statement->fetchColumn();
+    }
+
+    public function findByPhotographe(string $photographeId): array
+    {
+        $statement = $this->pdo->prepare(
+            'SELECT g.id, g.titre, g.description, g.type, g.mode_mise_en_page, g.statut,
+                    g.created_at, g.published_at,
+                    COUNT(gp.photo_id) AS nb_photos
+             FROM galerie g
+             LEFT JOIN galerie_photo gp ON g.id::uuid = gp.galerie_id
+             WHERE g.photographe_id = :photographe_id
+             GROUP BY g.id
+             ORDER BY g.created_at DESC'
+        );
+        $statement->execute([':photographe_id' => $photographeId]);
+
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function findPublishedById(string $galerieId, ?string $codeAcces): array
+    {
+        $statement = $this->pdo->prepare(
+            'SELECT g.id, g.titre, g.description, g.type, g.mode_mise_en_page,
+                    g.statut, g.created_at, g.published_at, g.photographe_id,
+                    gpriv.code_acces, gpriv.url_acces,
+                    gp.photo_id, gp.ordre
+             FROM galerie g
+             LEFT JOIN galerie_privee gpriv ON gpriv.galerie_id = g.id
+             LEFT JOIN galerie_photo gp ON g.id::uuid = gp.galerie_id
+             WHERE g.id = :galerie_id AND g.statut = \'publie\'
+             ORDER BY gp.ordre ASC'
+        );
+        $statement->execute([':galerie_id' => $galerieId]);
+        $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        if (empty($rows)) {
+            throw new \RuntimeException('Galerie non trouvée ou non publiée');
+        }
+
+        $first = $rows[0];
+        $type  = strtolower(trim($first['type'] ?? ''));
+
+        if (in_array($type, ['privée', 'privee', 'private'], true)) {
+            if (empty($codeAcces) || $first['code_acces'] !== $codeAcces) {
+                throw new \RuntimeException("Code d'accès invalide");
+            }
+        }
+
+        $galerie = [
+            'id'               => $first['id'],
+            'titre'            => $first['titre'],
+            'description'      => $first['description'],
+            'type'             => $first['type'],
+            'mode_mise_en_page'=> $first['mode_mise_en_page'],
+            'statut'           => $first['statut'],
+            'created_at'       => $first['created_at'],
+            'published_at'     => $first['published_at'],
+            'photographe_id'   => $first['photographe_id'],
+        ];
+
+        $photos = array_values(
+            array_filter(
+                array_map(fn($r) => $r['photo_id'] ? ['photo_id' => $r['photo_id'], 'ordre' => (int) $r['ordre']] : null, $rows)
+            )
+        );
+
+        return ['galerie' => $galerie, 'photos' => $photos];
     }
 }
 

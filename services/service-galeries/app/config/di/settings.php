@@ -23,4 +23,6 @@ return [
         'vhost'    => getenv('RABBITMQ_VHOST') ?: '/',
         'exchange' => getenv('AMQP_EXCHANGE')  ?: 'photopro.events',
     ],
+
+    'jwt_secret' => getenv('JWT_SECRET') ?: 'photopro-secret-key-dev-2026-secure',
 ];

@@ -18,8 +18,12 @@ class PreviewGalerieAction
     {
         try {
             $galleryId = $args['id'];
-            $user = $request->getAttribute('user');
-            $userId = $user->id ?? $request->getHeaderLine('X-User-Id');
+            $userId = $request->getAttribute('user_id');
+
+            if (!$userId) {
+                $response->getBody()->write(json_encode(['error' => 'Identité utilisateur manquante']));
+                return $response->withStatus(401)->withHeader('Content-Type', 'application/json');
+            }
 
             $gallery = $this->useCase->execute($galleryId, $userId);
 

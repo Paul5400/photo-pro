@@ -5,6 +5,9 @@ use photopro\galeries\api\actions\galeries\CreateGalerieAction;
 use photopro\galeries\api\actions\galeries\DeletePhotoFromGalerieAction;
 use photopro\galeries\api\actions\galeries\PreviewGalerieAction;
 use photopro\galeries\api\actions\galeries\PublishGalerieAction;
+use photopro\galeries\api\actions\galeries\CommentaireAction;
+use photopro\galeries\api\actions\galeries\GetGalerieAction;
+use photopro\galeries\api\actions\galeries\ListGaleriesAction;
 use photopro\galeries\api\actions\galeries\UnpublishGalerieAction;
 use photopro\galeries\core\application\ports\repositories\GalerieRepositoryInterface;
 use photopro\galeries\core\application\ports\services\GalerieServiceInterface;
@@ -12,6 +15,7 @@ use photopro\galeries\core\application\ports\GalerieEventPublisherInterface;
 use photopro\galeries\core\application\usecases\GalerieService;
 use photopro\galeries\core\application\usecases\PreviewGalerieUseCase;
 use photopro\galeries\core\application\usecases\PublishGalerieUseCase;
+use photopro\galeries\core\application\usecases\AjouterCommentaireUseCase;
 use photopro\galeries\core\application\usecases\UnpublishGalerieUseCase;
 use photopro\galeries\infra\messaging\RabbitMQPublisher;
 
@@ -35,6 +39,15 @@ return [
     UnpublishGalerieAction::class => function ($c) {
         return new UnpublishGalerieAction($c->get(UnpublishGalerieUseCase::class));
     },
+    CommentaireAction::class => function ($c) {
+        return new CommentaireAction($c->get(AjouterCommentaireUseCase::class));
+    },
+    ListGaleriesAction::class => function ($c) {
+        return new ListGaleriesAction($c->get(GalerieRepositoryInterface::class));
+    },
+    GetGalerieAction::class => function ($c) {
+        return new GetGalerieAction($c->get(GalerieRepositoryInterface::class));
+    },
     // event publisher
     GalerieEventPublisherInterface::class => function ($c) {
         return new RabbitMQPublisher($c->get('amqp'));
@@ -55,9 +68,13 @@ return [
             $c->get(GalerieEventPublisherInterface::class)
         );
     },
+    // use case commentaire
+    AjouterCommentaireUseCase::class => function ($c) {
+        return new AjouterCommentaireUseCase($c->get(GalerieRepositoryInterface::class));
+    },
     // service
     GalerieServiceInterface::class => function ($c) {
         return new GalerieService($c->get(GalerieRepositoryInterface::class));
-    }
+    },
 
 ];

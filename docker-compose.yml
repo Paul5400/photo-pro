@@ -36,6 +36,7 @@ services:
       - AUTH_URL=http://api.auth:80
       - GALLERY_URL=http://api.gallery:80
       - STOCKAGE_URL=http://api.stockage:80
+      - JWT_SECRET=photopro-secret-key-dev-2026-secure
     command: sh -c "composer install --no-dev && php -S 0.0.0.0:80 -t /var/php/public"
 
   # ---------------------------------------------------------
@@ -79,6 +80,7 @@ services:
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_USER=photopro
       - RABBITMQ_PASS=photopro
+      - JWT_SECRET=photopro-secret-key-dev-2026-secure
     command: sh -c "composer install --no-dev && php -S 0.0.0.0:80 -t /var/php/public"
 
   api.notifications:

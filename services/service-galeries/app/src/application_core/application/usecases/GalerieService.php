@@ -31,13 +31,13 @@ class GalerieService implements GalerieServiceInterface
         return $galerie;
     }
 
-    public function addPhotoToGalerie(GaleriePhoto $galeriePhoto): void
+    public function addPhotoToGalerie(GaleriePhoto $galeriePhoto, string $photographeId): void
     {
-        $this->galerieRepository->addPhotoToGalerie($galeriePhoto);
+        $this->galerieRepository->addPhotoToGalerie($galeriePhoto, $photographeId);
     }
 
-    public function deletePhotoFromGalerie(string $galerieId, string $photoId): void
+    public function deletePhotoFromGalerie(string $galerieId, string $photoId, string $photographeId): void
     {
-        $this->galerieRepository->deletePhotoFromGalerie($photoId, $galerieId);
+        $this->galerieRepository->deletePhotoFromGalerie($photoId, $galerieId, $photographeId);
     }
 }
