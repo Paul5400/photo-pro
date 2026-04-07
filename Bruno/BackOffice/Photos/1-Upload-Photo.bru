@@ -1,0 +1,26 @@
+meta {
+  name: 1-Upload-Photo
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8081/photos
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:multipart-form {
+  image: @file(D:\CoursEntier\CoursIUTCharlemagne\SAE Photographe\photo-pro\api_tests\test_image.png)
+  titre: Ma photo test
+}
+
+script:post-response {
+  if (res.status === 201) {
+    bru.setEnvVar("photo_id", res.getBody().photo_id);
+  }
+}

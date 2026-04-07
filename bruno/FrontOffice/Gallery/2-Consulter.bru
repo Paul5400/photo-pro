@@ -1,15 +1,12 @@
 meta {
-  name: 2 - Consulter Galerie
+  name: 2-Consulter-Galerie-Publique
   type: http
-  seq: 1
+  seq: 2
 }
 
 get {
-  url: http://localhost:8080/galeries/1234?code=MON_CODE_PRIVE
+  url: http://localhost:8080/galeries/{{galerie_id}}
   body: none
   auth: none
 }
 
-query {
-  code: MON_CODE_PRIVE
-}

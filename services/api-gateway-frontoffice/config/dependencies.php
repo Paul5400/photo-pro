@@ -21,7 +21,7 @@ return function (ContainerBuilder $containerBuilder) {
         'gallery.client' => function (ContainerInterface $c) {
             return new Client([
                 'base_uri' => getenv('GALLERY_URL'),
-                'timeout' => 5.0,
+                'timeout' => 30.0,
             ]);
         },
         
@@ -29,7 +29,7 @@ return function (ContainerBuilder $containerBuilder) {
         'auth.client' => function (ContainerInterface $c) {
             return new Client([
                 'base_uri' => getenv('AUTH_URL'),
-                'timeout' => 5.0,
+                'timeout' => 30.0,
             ]);
         },
     ]);

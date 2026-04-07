@@ -1,6 +1,18 @@
 
 -- schéma à insérer
 -- =========================================================
+-- TABLE : photo (projection locale — chemin_s3 = clé permanente S3)
+-- =========================================================
+
+CREATE TABLE IF NOT EXISTS photo (
+    id        VARCHAR(36)  NOT NULL,
+    chemin_s3 VARCHAR(500) NOT NULL,
+    titre     VARCHAR(255),
+
+    CONSTRAINT pk_photo PRIMARY KEY (id)
+);
+
+-- =========================================================
 -- TABLE : galerie
 -- =========================================================
 

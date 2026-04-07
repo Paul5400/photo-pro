@@ -17,4 +17,10 @@ interface GalerieRepositoryInterface
     public function publishGallery(string $galleryId, string $userId): void;
 
     public function unpublishGallery(string $galleryId, string $userId): void;
+
+    /**
+     * Retourne la galerie + ses photos pour un visiteur (galerie publiée uniquement).
+     * Inclut code_acces pour les galeries privées (à vérifier dans l'action, ne pas exposer).
+     */
+    public function getGalleryForVisitor(string $galleryId): array;
 }

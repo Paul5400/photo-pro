@@ -73,6 +73,10 @@ class ProxyAction
             $body = (string)$request->getBody();
             if ($body !== '') {
                 $options['body'] = $body;
+                $contentType = $request->getHeaderLine('Content-Type');
+                if ($contentType !== '') {
+                    $options['headers']['Content-Type'] = $contentType;
+                }
             }
         }
 
@@ -141,7 +145,7 @@ class ProxyAction
 
     private function filterHeaders(array $headers): array
     {
-        $blocked = ['host', 'content-length', 'content-type'];
+        $blocked = ['host', 'content-length'];
         $filtered = [];
         foreach ($headers as $name => $values) {
             if (in_array(strtolower($name), $blocked, true)) {
