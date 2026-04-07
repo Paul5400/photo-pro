@@ -1,12 +1,12 @@
 meta {
-  name: 4-Ajouter-Photo-Galerie
+  name: 6-Preview-Galerie
   type: http
-  seq: 1
+  seq: 6
 }
 
-patch {
-  url: http://localhost:8081/galeries/{{galerie_id}}/photos
-  body: json
+get {
+  url: http://localhost:8081/galeries/{{galerie_id}}/preview
+  body: none
   auth: bearer
 }
 
@@ -14,14 +14,7 @@ auth:bearer {
   token: {{token}}
 }
 
-body:json {
-  {
-    "photo_id": "{{photo_id}}"
-  }
-}
-
 vars:pre-request {
-  photo_id: 14dd7e88-4440-4476-90b4-809daf6e0b03
-  galerie_id: c956cddd-595b-41c5-a897-c2293cfdd425
   token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJwaG90b3Byby1hdXRoIiwiaWF0IjoxNzc1NTQyMTcwLCJleHAiOjE3NzYxNDY5NzAsInN1YiI6IjQ0M2Q0NTc4LWY4OGQtNDJmMC1hOTM3LTA3ZDI5ODg2MjU2YSIsInJvbGUiOiJwaG90b2dyYXBoZSIsInVzZXIiOnsiaWQiOiI0NDNkNDU3OC1mODhkLTQyZjAtYTkzNy0wN2QyOTg4NjI1NmEiLCJwc2V1ZG8iOiIiLCJlbWFpbCI6IiJ9fQ.liTD2uzuGb4f0cSBRsBo_2N-n3pq9anY34f7hE--ILs
+  galerie_id: 616abcf1-33cc-498e-94f1-5a2fbbbe16f5
 }

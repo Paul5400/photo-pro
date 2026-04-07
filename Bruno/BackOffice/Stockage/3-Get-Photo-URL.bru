@@ -1,11 +1,11 @@
 meta {
-  name: 8-Gestion-Galeries-Lister
+  name: 3-Get-Photo-URL
   type: http
-  seq: 4
+  seq: 3
 }
 
 get {
-  url: http://localhost:8081/galeries
+  url: {{base_url_stockage}}/photos/{{photo_id}}/url
   body: none
   auth: bearer
 }

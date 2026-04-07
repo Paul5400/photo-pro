@@ -1,0 +1,39 @@
+meta {
+  name: 2-Creer-Galerie-Privee
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8081/galeries
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "titre": "Soirée Familie Durand",
+    "type": "privée",
+    "mode_mise_en_page": "grille",
+    "statut": "brouillon",
+    "photographe_id": "{{photographe_id}}",
+    "description": "Photos de la soirée",
+    "nomClient": "Marie Durand",
+    "emailClient": "marie.durand@email.com",
+    "telephoneClient": "0600000001"
+  }
+}
+
+vars:pre-request {
+  photographe_id: 443d4578-f88d-42f0-a937-07d29886256a
+}
+
+script:post-response {
+  if (res.status === 201) {
+    bru.setEnvVar("galerie_id", res.getBody().galerie.id);
+  }
+}

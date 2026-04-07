@@ -21,15 +21,16 @@ return function (ContainerBuilder $containerBuilder) {
         'gallery.client' => function (ContainerInterface $c) {
             return new Client([
                 'base_uri' => getenv('GALLERY_URL'),
-                'timeout' => 5.0,
+                'timeout' => 30.0,
             ]);
         },
         
         // Client HTTP Guzzle pour le service d'Authentification
+        // Timeout à 30s : bcrypt cost 12 prend ~8-15s
         'auth.client' => function (ContainerInterface $c) {
             return new Client([
                 'base_uri' => getenv('AUTH_URL'),
-                'timeout' => 5.0,
+                'timeout' => 30.0,
             ]);
         },
 
@@ -37,7 +38,7 @@ return function (ContainerBuilder $containerBuilder) {
         'stockage.client' => function (ContainerInterface $c) {
             return new Client([
                 'base_uri' => getenv('STOCKAGE_URL'),
-                'timeout' => 5.0,
+                'timeout' => 30.0,
             ]);
         },
     ]);

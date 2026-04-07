@@ -73,6 +73,10 @@ class ProxyAction
             $body = (string)$request->getBody();
             if ($body !== '') {
                 $options['body'] = $body;
+                $contentType = $request->getHeaderLine('Content-Type');
+                if ($contentType !== '') {
+                    $options['headers']['Content-Type'] = $contentType;
+                }
             }
         }
 
