@@ -39,12 +39,18 @@ $app->get('/', function (Request $request, Response $response, $args) {
     return $response;
 });
 
-$app->post('/galeries', CreateGalerieAction::class);
-$app->post('/photos', UploadPhotoAction::class);
-$app->patch('/galeries/{id}/photos', AddPhotoGalerieAction::class);
-$app->delete('/galeries/{id}/photos/{photoId}', DeletePhotoFromGalerieAction::class);
-$app->get('/galeries/{id}/preview', PreviewGalerieAction::class);
-$app->post('/galeries/{id}/publish', PublishGalerieAction::class);
-$app->post('/galeries/{id}/unpublish', UnpublishGalerieAction::class);
+$app->post('/galeries', CreateGalerieAction::class)
+    ->add(new AuthMiddleware());
+$app->patch('/galeries/{id}/photos', AddPhotoGalerieAction::class)
+    ->add(new AuthMiddleware());
+$app->delete('/galeries/{id}/photos/{photoId}', DeletePhotoFromGalerieAction::class)
+    ->add(new AuthMiddleware());
+$app->get('/galeries/{id}/preview',PreviewGalerieAction::class )
+    ->add(new AuthMiddleware());
+$app->post('/galeries/{id}/publish',PublishGalerieAction::class)
+    ->add(new AuthMiddleware());
+$app->post('/galeries/{id}/unpublish',UnpublishGalerieAction::class)
+    ->add(new AuthMiddleware());
+
 
 $app->run();

@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS galerie_photo (
     photo_id   UUID NOT NULL,
     ordre      INT         NOT NULL DEFAULT 0,
     added_at   TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    url        VARCHAR(500),
 
     CONSTRAINT pk_galerie_photo PRIMARY KEY (galerie_id, photo_id)
 );

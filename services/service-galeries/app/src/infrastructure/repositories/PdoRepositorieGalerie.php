@@ -98,8 +98,8 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
     public function addPhotoToGalerie(GaleriePhoto $galeriePhoto): void
     {
         $statement = $this->pdo->prepare(
-            'INSERT INTO galerie_photo (galerie_id, photo_id, ordre, added_at)
-             VALUES (:galerie_id, :photo_id, :ordre, :added_at)'
+            'INSERT INTO galerie_photo (galerie_id, photo_id, ordre, added_at, url)
+             VALUES (:galerie_id, :photo_id, :ordre, :added_at, :url)'
         );
 
         $statement->execute([
@@ -107,6 +107,7 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
             ':photo_id' => $galeriePhoto->getPhotoId()->toString(),
             ':ordre' => $galeriePhoto->getOrdre(),
             ':added_at' => $galeriePhoto->getAddedAt()->format('Y-m-d H:i:s'),
+            ':url' => $galeriePhoto->getUrl(),
         ]);
     }
 
@@ -128,9 +129,9 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
                 g.mode_mise_en_page,
                 g.created_at,
                 g.published_at,
-                p.id AS photo_id,
-                p.chemin_s3,
-                p.titre AS photo_titre
+                gp.photo_id,
+                gp.url AS url,
+                NULL AS photo_titre
             FROM galerie g
             LEFT JOIN galerie_photo gp ON g.id::uuid = gp.galerie_id
             LEFT JOIN photo p ON gp.photo_id = p.id::uuid

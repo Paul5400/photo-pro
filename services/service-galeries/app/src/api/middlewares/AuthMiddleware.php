@@ -5,9 +5,13 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Psr7\Response;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 
 class AuthMiddleware
 {
+    private string $secret = "341e24419bac01ddffd0964991bc701b";
+
     public function __invoke(Request $request, RequestHandler $handler): ResponseInterface
     {
         $authorizationHeader = $request->getHeaderLine('Authorization');
@@ -22,16 +26,19 @@ class AuthMiddleware
 
         $token = $matches[1];
 
-        if (!$this->isValidToken($token)) {
+        try {
+
+            $decoded = JWT::decode($token, new Key($this->secret, 'HS256'));
+
+            $userId = $decoded->sub;
+
+            $request = $request->withAttribute('user_id', $userId);
+
+        } catch (\Exception $e) {
             return $this->unauthorizedResponse('Token invalide');
         }
 
         return $handler->handle($request);
-    }
-
-    private function isValidToken(string $token): bool
-    {
-        return !empty($token);
     }
 
     private function unauthorizedResponse(string $message): ResponseInterface
