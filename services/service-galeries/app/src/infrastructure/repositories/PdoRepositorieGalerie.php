@@ -298,7 +298,7 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
                 g.statut,
                 g.mode_mise_en_page,
                 g.published_at,
-                p.id AS photo_id,
+                gp.photo_id,
                 p.chemin_s3,
                 p.titre AS photo_titre
             FROM galerie g
