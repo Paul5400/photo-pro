@@ -15,12 +15,13 @@ class GalerieService implements GalerieServiceInterface
         $this->galerieRepository = $galerieRepository;
     }
 
-    public function createGalerie(GalerieDTO $galerieDTO): Galerie
+    public function createGalerie(GalerieDTO $galerieDTO): array
     {
         $galerie = $this->galerieRepository->create($galerieDTO);
 
+        $codeAcces = null;
         if ($galerieDTO->getType() === "privée") {
-            $this->galerieRepository->createGaleriePrivee(
+            $codeAcces = $this->galerieRepository->createGaleriePrivee(
                 $galerie->getId()->toString(),
                 $galerieDTO->getNomClient(),
                 $galerieDTO->getEmailClient(),
@@ -28,7 +29,7 @@ class GalerieService implements GalerieServiceInterface
             );
         }
 
-        return $galerie;
+        return ['galerie' => $galerie, 'code_acces' => $codeAcces];
     }
 
     public function addPhotoToGalerie(GaleriePhoto $galeriePhoto): void

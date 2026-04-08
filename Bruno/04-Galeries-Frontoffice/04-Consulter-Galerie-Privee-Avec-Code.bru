@@ -1,0 +1,32 @@
+meta {
+  name: 04 - Consulter Galerie Privee Avec Code
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{frontoffice}}/galeries/{{galerie_privee_id}}?code_acces={{code_acces}}
+  body: none
+  auth: none
+}
+
+params:query {
+  code_acces: {{code_acces}}
+}
+
+tests {
+  test("Avec code_acces valide retourne 200", function() {
+    expect(res.status).to.equal(200);
+  });
+  test("Réponse contient galerie et photos", function() {
+    const body = res.getBody();
+    expect(body).to.have.property("galerie");
+    expect(body).to.have.property("photos");
+  });
+  test("Photos ont des URLs", function() {
+    const photos = res.getBody().photos;
+    photos.forEach(function(p) {
+      expect(p.url).to.be.a("string").and.not.equal("");
+    });
+  });
+}

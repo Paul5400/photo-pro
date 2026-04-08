@@ -1,0 +1,37 @@
+meta {
+  name: 01 - Register Photographe
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{backoffice}}/auth/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nom": "Dupont",
+    "prenom": "Jean",
+    "pseudo": "jeandupont",
+    "email": "{{login_email}}",
+    "password": "{{login_password}}",
+    "role": "photographe"
+  }
+}
+
+script:post-response {
+  if (res.status === 201 || res.status === 200) {
+    const body = res.getBody();
+    if (body.photographe_id) {
+      bru.setEnvVar("photographe_id", body.photographe_id);
+    }
+  }
+}
+
+tests {
+  test("Register retourne 201 ou 409 (déjà existant)", function() {
+    expect(res.status).to.be.oneOf([201, 409]);
+  });
+}

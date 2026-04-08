@@ -1,0 +1,21 @@
+meta {
+  name: 09 - Depublier Galerie
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{backoffice}}/galeries/{{galerie_id}}/unpublish
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("Dépublication retourne 200", function() {
+    expect(res.status).to.equal(200);
+  });
+}

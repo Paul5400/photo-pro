@@ -1,0 +1,21 @@
+meta {
+  name: 06 - Publier Galerie Privee
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{backoffice}}/galeries/{{galerie_privee_id}}/publish
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("Publication galerie privée retourne 200", function() {
+    expect(res.status).to.equal(200);
+  });
+}

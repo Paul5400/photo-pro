@@ -1,0 +1,43 @@
+meta {
+  name: 02 - Creer Galerie Publique
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{backoffice}}/galeries
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "titre": "Galerie Test Run",
+    "description": "Créée automatiquement par les tests",
+    "type": "publique",
+    "mode_mise_en_page": "grille",
+    "statut": "brouillon"
+  }
+}
+
+script:post-response {
+  if (res.status === 201) {
+    const body = res.getBody();
+    if (body.galerie && body.galerie.id) {
+      bru.setEnvVar("galerie_id", body.galerie.id);
+    }
+  }
+}
+
+tests {
+  test("Création retourne 201", function() {
+    expect(res.status).to.equal(201);
+  });
+  test("galerie.id present", function() {
+    expect(res.getBody().galerie).to.have.property("id");
+  });
+}

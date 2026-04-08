@@ -1,0 +1,46 @@
+meta {
+  name: 03 - Creer Galerie Privee
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{backoffice}}/galeries
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "titre": "Galerie Privée Test",
+    "description": "Galerie privée créée par les tests",
+    "type": "privée",
+    "mode_mise_en_page": "grille",
+    "statut": "brouillon",
+    "nom_client": "Client Test",
+    "email_client": "client@test.com",
+    "telephone_client": "0600000000"
+  }
+}
+
+script:post-response {
+  if (res.status === 201) {
+    const body = res.getBody();
+    if (body.galerie && body.galerie.id) {
+      bru.setEnvVar("galerie_privee_id", body.galerie.id);
+    }
+    if (body.code_acces) {
+      bru.setEnvVar("code_acces", body.code_acces);
+    }
+  }
+}
+
+tests {
+  test("Création galerie privée retourne 201", function() {
+    expect(res.status).to.equal(201);
+  });
+}

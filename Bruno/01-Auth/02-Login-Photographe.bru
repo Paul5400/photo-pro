@@ -1,0 +1,39 @@
+meta {
+  name: 02 - Login Photographe
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{backoffice}}/auth/login/photographe
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "{{login_email}}",
+    "password": "{{login_password}}"
+  }
+}
+
+script:post-response {
+  if (res.status === 200) {
+    const body = res.getBody();
+    if (body.token) {
+      bru.setEnvVar("token", body.token);
+    }
+    if (body.photographe && body.photographe.id) {
+      bru.setEnvVar("photographe_id", body.photographe.id);
+    }
+  }
+}
+
+tests {
+  test("Login retourne 200", function() {
+    expect(res.status).to.equal(200);
+  });
+  test("Token present", function() {
+    expect(res.getBody()).to.have.property("token");
+  });
+}

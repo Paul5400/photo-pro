@@ -38,18 +38,23 @@ class CreateGalerieAction
                 $data['description'] ?? null,
                 $data['photo_couverture_id'] ?? null,
                 isset($data['published_at']) ? new \DateTime($data['published_at']) : null,
-                $data['nomClient'] ?? null,
-                $data['emailClient'] ?? null,
-                $data['telephoneClient'] ?? null
+                $data['nom_client'] ?? $data['nomClient'] ?? null,
+                $data['email_client'] ?? $data['emailClient'] ?? null,
+                $data['telephone_client'] ?? $data['telephoneClient'] ?? null
                 
             );
 
-            $galerieDTO = $this->galerieService->createGalerie($galerieDTO);
+            $result = $this->galerieService->createGalerie($galerieDTO);
 
-            $response->getBody()->write(json_encode([
-                'galerie' => $galerieDTO,
-                'message' => 'Galerie créée avec succès'
-            ]));
+            $responseBody = [
+                'galerie' => $result['galerie'],
+                'message' => 'Galerie créée avec succès',
+            ];
+            if ($result['code_acces'] !== null) {
+                $responseBody['code_acces'] = $result['code_acces'];
+            }
+
+            $response->getBody()->write(json_encode($responseBody));
 
             return $response->withHeader('Content-Type', 'application/json')->withStatus(201);
         } catch (\InvalidArgumentException | \TypeError $exception) {

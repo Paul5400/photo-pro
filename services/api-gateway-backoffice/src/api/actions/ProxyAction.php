@@ -33,6 +33,9 @@ class ProxyAction
         if (str_starts_with($path, '/stockage/upload')) {
             $targetPath = '/upload';
         }
+        if ($path === '/photos' || $path === '/photos/') {
+            $targetPath = '/upload';
+        }
 
         $options = [
             'headers' => $this->filterHeaders($request->getHeaders()),
@@ -137,7 +140,7 @@ class ProxyAction
             return $this->container->get('auth.client');
         }
 
-        if (str_starts_with($path, '/stockage')) {
+        if (str_starts_with($path, '/stockage') || str_starts_with($path, '/photos')) {
             return $this->container->get('stockage.client');
         }
 

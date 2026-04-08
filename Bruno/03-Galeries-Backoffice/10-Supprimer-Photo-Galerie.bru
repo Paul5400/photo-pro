@@ -1,0 +1,21 @@
+meta {
+  name: 10 - Supprimer Photo de Galerie
+  type: http
+  seq: 10
+}
+
+delete {
+  url: {{backoffice}}/galeries/{{galerie_id}}/photos/{{photo_id}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("Suppression photo retourne 200", function() {
+    expect(res.status).to.equal(200);
+  });
+}

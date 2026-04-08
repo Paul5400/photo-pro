@@ -1,0 +1,44 @@
+meta {
+  name: 03 - Login Visiteur
+  type: http
+  seq: 0
+}
+
+post {
+  url: {{frontoffice}}/auth/login/visiteur
+  body: json
+  auth: none
+}
+
+script:pre-request {
+  const frontoffice = bru.getEnvVar("frontoffice");
+  const galeriePriveeId = bru.getEnvVar("galerie_privee_id");
+  const codeAcces = bru.getEnvVar("code_acces");
+  const urlAcces = frontoffice + "/galeries/" + galeriePriveeId + "?code_acces=" + codeAcces;
+  bru.setEnvVar("url_acces", urlAcces);
+}
+
+body:json {
+  {
+    "code_acces": "{{code_acces}}",
+    "url_acces": "{{url_acces}}"
+  }
+}
+
+script:post-response {
+  if (res.status === 200 || res.status === 201) {
+    const body = res.getBody();
+    if (body.token) {
+      bru.setEnvVar("token_visiteur", body.token);
+    }
+  }
+}
+
+tests {
+  test("Login visiteur retourne 200 ou 201", function() {
+    expect(res.status).to.be.oneOf([200, 201]);
+  });
+  test("Token visiteur présent", function() {
+    expect(res.getBody()).to.have.property("token");
+  });
+}

@@ -1,0 +1,24 @@
+meta {
+  name: 01 - Lister Mes Galeries
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{backoffice}}/galeries
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("Lister retourne 200", function() {
+    expect(res.status).to.equal(200);
+  });
+  test("Réponse contient galeries", function() {
+    expect(res.getBody()).to.have.property("galeries");
+  });
+}

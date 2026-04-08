@@ -1,0 +1,17 @@
+meta {
+  name: 03 - Consulter Galerie Privee Sans Code
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{frontoffice}}/galeries/{{galerie_privee_id}}
+  body: none
+  auth: none
+}
+
+tests {
+  test("Sans code_acces retourne 401", function() {
+    expect(res.status).to.equal(401);
+  });
+}

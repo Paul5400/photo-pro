@@ -70,10 +70,10 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
     }
     public function createGaleriePrivee(
         string $galerieId,
-        string $nomClient,
-        string $emailClient,
+        ?string $nomClient,
+        ?string $emailClient,
         ?string $telephone
-    ): void {
+    ): string {
         $id = Uuid::uuid4();
         $code = bin2hex(random_bytes(8));
         $base = rtrim(getenv('FRONTOFFICE_URL') ?: 'http://localhost:8080', '/');
@@ -95,6 +95,8 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
             ':code_acces' => $code,
             ':url_acces' => $url
         ]);
+
+        return $code;
     }
 
     public function addPhotoToGalerie(GaleriePhoto $galeriePhoto): void
