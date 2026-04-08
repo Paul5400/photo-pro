@@ -52,4 +52,10 @@ interface GalerieRepositoryInterface
      * @return array Tableau de commentaires
      */
     public function getCommentairesByPhoto(string $galerieId, string $photoId): array;
+
+    /**
+     * Retourne les données nécessaires à l'envoi d'une notification (titre, type, statut, infos privée).
+     * @return array{titre:string,type:string,statut:string,email_client:string|null,code_acces:string|null,url_acces:string|null}|null
+     */
+    public function getGalerieDataForNotification(string $galerieId): ?array;
 }

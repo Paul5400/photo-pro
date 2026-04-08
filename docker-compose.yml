@@ -77,6 +77,11 @@ services:
       - STOCKAGE_URL=http://api.stockage:80
       - FRONTOFFICE_URL=http://localhost:8080
       - JWT_SECRET=photopro-secret-key-dev-2026-secure
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=photopro
+      - RABBITMQ_PASS=photopro
+      - RABBITMQ_VHOST=/
     depends_on:
       - gallery.db
       - rabbitmq

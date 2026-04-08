@@ -412,4 +412,18 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
         ]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getGalerieDataForNotification(string $galerieId): ?array
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT g.titre, g.type, g.statut,
+                    gp.email_client, gp.code_acces, gp.url_acces
+             FROM galerie g
+             LEFT JOIN galerie_privee gp ON gp.galerie_id = g.id
+             WHERE g.id = :id'
+        );
+        $stmt->execute([':id' => $galerieId]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ?: null;
+    }
 }

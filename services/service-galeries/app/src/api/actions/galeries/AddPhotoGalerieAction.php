@@ -3,16 +3,19 @@ namespace photopro\galeries\api\actions\galeries;
 
 use DateTime;
 use Ramsey\Uuid\Uuid;
+use photopro\galeries\core\application\ports\repositories\GalerieRepositoryInterface;
 use photopro\galeries\core\application\ports\services\GalerieServiceInterface;
 use photopro\galeries\core\domain\entities\GaleriePhoto;
+use photopro\galeries\infra\messaging\RabbitMQEventPublisher;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 /**
  * Action PATCH /galeries/{id}/photos
  *
- * Associe une photo (déjà uploadée via service-stockage) à une galerie.
+ * Associe une photo (éjà uploadée via service-stockage) à une galerie.
  * La vérification de propriété est assurée par la couche repository.
+ * Publie un événement gallery.modified si la galerie est privée et publiée.
  *
  * Corps JSON attendu :
  *   - photo_id (UUID de la photo dans service-stockage)
@@ -26,12 +29,11 @@ use Psr\Http\Message\ServerRequestInterface as Request;
  */
 class AddPhotoGalerieAction
 {
-    private GalerieServiceInterface $galerieService;
-
-    public function __construct(GalerieServiceInterface $galerieService)
-    {
-        $this->galerieService = $galerieService;
-    }
+    public function __construct(
+        private GalerieServiceInterface    $galerieService,
+        private GalerieRepositoryInterface $galerieRepository,
+        private RabbitMQEventPublisher     $publisher,
+    ) {}
 
     public function __invoke(Request $request, Response $response, array $args): Response
     {
@@ -62,6 +64,21 @@ class AddPhotoGalerieAction
             );
 
             $this->galerieService->addPhotoToGalerie($galeriePhoto);
+
+            $galerieData = $this->galerieRepository->getGalerieDataForNotification($galerieId);
+            if ($galerieData && $galerieData['statut'] === 'publie' && !empty($galerieData['email_client'])) {
+                try {
+                    $this->publisher->publish('gallery.modified', [
+                        'galerie_id'    => $galerieId,
+                        'galerie_titre' => $galerieData['titre'],
+                        'client_email'  => $galerieData['email_client'],
+                        'code_acces'    => $galerieData['code_acces'] ?? '',
+                        'url_acces'     => $galerieData['url_acces'] ?? '',
+                    ]);
+                } catch (\Throwable $e) {
+                    error_log('[AddPhotoGalerieAction] RabbitMQ publish failed: ' . $e->getMessage());
+                }
+            }
 
             $response->getBody()->write(json_encode(['message' => 'Photo ajoutée à la galerie avec succès']));
             return $response->withStatus(200)->withHeader('Content-Type', 'application/json');

@@ -18,6 +18,7 @@ use photopro\galeries\core\application\usecases\GalerieService;
 use photopro\galeries\core\application\usecases\PreviewGalerieUseCase;
 use photopro\galeries\core\application\usecases\PublishGalerieUseCase;
 use photopro\galeries\core\application\usecases\UnpublishGalerieUseCase;
+use photopro\galeries\infra\messaging\RabbitMQEventPublisher;
 use photopro\galeries\core\application\usecases\AjouterCommentaireUseCase;
 
 return [
@@ -29,10 +30,18 @@ return [
         return new GetGaleriesAction($c->get(GalerieRepositoryInterface::class));
     },
     AddPhotoGalerieAction::class => function ($c) {
-        return new AddPhotoGalerieAction($c->get(GalerieServiceInterface::class));
+        return new AddPhotoGalerieAction(
+            $c->get(GalerieServiceInterface::class),
+            $c->get(GalerieRepositoryInterface::class),
+            $c->get(RabbitMQEventPublisher::class),
+        );
     },
     DeletePhotoFromGalerieAction::class => function ($c) {
-        return new DeletePhotoFromGalerieAction($c->get(GalerieServiceInterface::class));
+        return new DeletePhotoFromGalerieAction(
+            $c->get(GalerieServiceInterface::class),
+            $c->get(GalerieRepositoryInterface::class),
+            $c->get(RabbitMQEventPublisher::class),
+        );
     },
     UploadPhotoAction::class => function ($c) {
         return new UploadPhotoAction(
@@ -54,12 +63,14 @@ return [
     },
     PublishGalerieAction::class => function ($c) {
         return new PublishGalerieAction(
-            $c->get(GalerieRepositoryInterface::class)
+            $c->get(GalerieRepositoryInterface::class),
+            $c->get(RabbitMQEventPublisher::class),
         );
     },
     UnpublishGalerieAction::class => function ($c) {
         return new UnpublishGalerieAction(
-            $c->get(GalerieRepositoryInterface::class)
+            $c->get(GalerieRepositoryInterface::class),
+            $c->get(RabbitMQEventPublisher::class),
         );
     },
     AjouterCommentaireUseCase::class => function ($c) {
@@ -73,3 +84,4 @@ return [
         return new GalerieService($c->get(GalerieRepositoryInterface::class));
     },
 ];
+
