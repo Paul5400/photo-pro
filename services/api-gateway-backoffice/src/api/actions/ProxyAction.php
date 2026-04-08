@@ -33,6 +33,9 @@ class ProxyAction
         if (str_starts_with($path, '/stockage/upload')) {
             $targetPath = '/upload';
         }
+        if ($path === '/photos' || $path === '/photos/') {
+            $targetPath = '/upload';
+        }
 
         $options = [
             'headers' => $this->filterHeaders($request->getHeaders()),

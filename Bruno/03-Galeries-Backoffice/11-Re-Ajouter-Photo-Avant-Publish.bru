@@ -1,0 +1,28 @@
+meta {
+  name: 11 - Re-Ajouter Photo Avant Publish
+  type: http
+  seq: 11
+}
+
+patch {
+  url: {{backoffice}}/galeries/{{galerie_id}}/photos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "photo_id": "{{photo_id}}",
+    "ordre": 1
+  }
+}
+
+tests {
+  test("Re-ajout photo retourne 200", function() {
+    expect(res.status).to.equal(200);
+  });
+}

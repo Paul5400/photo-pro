@@ -1,0 +1,27 @@
+meta {
+  name: 01 - Lister Galeries Publiques
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{frontoffice}}/galeries
+  body: none
+  auth: none
+}
+
+tests {
+  test("Lister retourne 200", function() {
+    expect(res.status).to.equal(200);
+  });
+  test("Réponse contient galeries", function() {
+    expect(res.getBody()).to.have.property("galeries");
+  });
+  test("Galeries sont publiques et publiées", function() {
+    const galeries = res.getBody().galeries;
+    galeries.forEach(function(g) {
+      expect(g.type).to.equal("publique");
+      expect(g.statut).to.equal("publie");
+    });
+  });
+}

@@ -1,0 +1,28 @@
+meta {
+  name: 04 - Ajouter Photo a Galerie
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{backoffice}}/galeries/{{galerie_id}}/photos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "photo_id": "{{photo_id}}",
+    "ordre": 1
+  }
+}
+
+tests {
+  test("Ajout photo retourne 200", function() {
+    expect(res.status).to.equal(200);
+  });
+}

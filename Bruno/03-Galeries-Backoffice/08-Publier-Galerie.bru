@@ -1,0 +1,21 @@
+meta {
+  name: 08 - Publier Galerie
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{backoffice}}/galeries/{{galerie_id}}/publish
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("Publication retourne 200", function() {
+    expect(res.status).to.equal(200);
+  });
+}

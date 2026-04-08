@@ -32,7 +32,7 @@ class GalerieService implements GalerieServiceInterface
 
         // Une galerie privée nécessite un accès sécurisé par code pour le client
         if ($galerieDTO->getType() === "privée") {
-            $this->galerieRepository->createGaleriePrivee(
+            $codeAcces = $this->galerieRepository->createGaleriePrivee(
                 $galerie->getId()->toString(),
                 $galerieDTO->getNomClient(),
                 $galerieDTO->getEmailClient(),
@@ -40,7 +40,7 @@ class GalerieService implements GalerieServiceInterface
             );
         }
 
-        return $galerie;
+        return ['galerie' => $galerie, 'code_acces' => $codeAcces];
     }
 
     /**

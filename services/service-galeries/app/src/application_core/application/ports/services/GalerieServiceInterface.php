@@ -6,7 +6,7 @@ use photopro\galeries\core\domain\entities\GaleriePhoto;
 
 interface GalerieServiceInterface
 {
-    public function createGalerie(GalerieDTO $galerieDTO): Galerie;
+    public function createGalerie(GalerieDTO $galerieDTO): array;
 
     public function addPhotoToGalerie(GaleriePhoto $galeriePhoto): void;
 

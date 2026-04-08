@@ -1,0 +1,36 @@
+meta {
+  name: 07 - Preview Galerie
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{backoffice}}/galeries/{{galerie_privee_id}}/preview
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+script:post-response {
+  if (res.status === 200) {
+    const body = res.getBody();
+    if (body.galerie && body.galerie.code_acces) {
+      bru.setEnvVar("code_acces", body.galerie.code_acces);
+    }
+  }
+}
+
+tests {
+  test("Preview retourne 200", function() {
+    expect(res.status).to.equal(200);
+  });
+  test("Réponse contient galerie", function() {
+    expect(res.getBody()).to.have.property("galerie");
+  });
+  test("Réponse contient photos", function() {
+    expect(res.getBody()).to.have.property("photos");
+  });
+}

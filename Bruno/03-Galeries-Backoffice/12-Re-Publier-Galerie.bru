@@ -1,0 +1,21 @@
+meta {
+  name: 12 - Re-Publier Galerie Pour Frontoffice
+  type: http
+  seq: 12
+}
+
+post {
+  url: {{backoffice}}/galeries/{{galerie_id}}/publish
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("Re-publication retourne 200", function() {
+    expect(res.status).to.equal(200);
+  });
+}

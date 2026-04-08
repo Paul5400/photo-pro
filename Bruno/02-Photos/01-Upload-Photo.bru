@@ -1,0 +1,38 @@
+meta {
+  name: 01 - Upload Photo
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{backoffice}}/photos
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:multipart-form {
+  image: @file(./test_image.png)
+  titre: Photo de test
+}
+
+script:post-response {
+  if (res.status === 201) {
+    const body = res.getBody();
+    if (body.photo_id) {
+      bru.setEnvVar("photo_id", body.photo_id);
+    }
+  }
+}
+
+tests {
+  test("Upload retourne 201", function() {
+    expect(res.status).to.equal(201);
+  });
+  test("photo_id present", function() {
+    expect(res.getBody()).to.have.property("photo_id");
+  });
+}
