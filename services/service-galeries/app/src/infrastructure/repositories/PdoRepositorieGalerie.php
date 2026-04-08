@@ -395,4 +395,19 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
         ]);
         return $id;
     }
+
+    public function getCommentairesByPhoto(string $galerieId, string $photoId): array
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT id, auteur, contenu, created_at 
+             FROM photo_commentaire 
+             WHERE galerie_id = :galerie_id AND photo_id = :photo_id 
+             ORDER BY created_at ASC'
+        );
+        $stmt->execute([
+            ':galerie_id' => $galerieId,
+            ':photo_id'  => $photoId,
+        ]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

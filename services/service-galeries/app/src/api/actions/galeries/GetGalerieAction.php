@@ -81,10 +81,15 @@ class GetGalerieAction
                     continue;
                 }
                 $url = $this->storageClient->getPresignedUrl($row['photo_id']);
+                
+                // Récupération des commentaires pour cette photo spécifique dans cette galerie
+                $commentaires = $this->galerieRepository->getCommentairesByPhoto($galleryId, $row['photo_id']);
+
                 $result['photos'][] = [
-                    'id'    => $row['photo_id'],
-                    'titre' => $row['photo_titre'],
-                    'url'   => $url,
+                    'id'           => $row['photo_id'],
+                    'titre'        => $row['photo_titre'],
+                    'url'          => $url,
+                    'commentaires' => $commentaires,
                 ];
             }
 
