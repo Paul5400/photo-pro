@@ -25,6 +25,7 @@ use photopro\galeries\api\actions\galeries\GetGalerieAction;
 use photopro\galeries\api\actions\galeries\PreviewGalerieAction;
 use photopro\galeries\api\actions\galeries\PublishGalerieAction;
 use photopro\galeries\api\actions\galeries\UnpublishGalerieAction;
+use photopro\galeries\api\actions\galeries\CommentaireAction;
 use photopro\galeries\api\actions\photos\UploadPhotoAction;
 use photopro\galeries\api\middlewares\AuthMiddleware;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -85,6 +86,9 @@ $app->post('/galeries/{id}/publish', PublishGalerieAction::class)
 // Dépublier une galerie (statut publie → brouillon)
 $app->post('/galeries/{id}/unpublish', UnpublishGalerieAction::class)
     ->add(new AuthMiddleware());
+
+// Ajouter un commentaire à une photo (public, sans JWT)
+$app->post('/galeries/{id}/photos/{photoId}/commentaires', CommentaireAction::class);
 
 
 $app->run();

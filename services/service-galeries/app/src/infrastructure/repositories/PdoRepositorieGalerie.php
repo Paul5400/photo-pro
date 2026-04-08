@@ -362,4 +362,37 @@ class PdoRepositorieGalerie implements GalerieRepositoryInterface
         }
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getGalerieStatutEtType(string $galerieId): ?array
+    {
+        $stmt = $this->pdo->prepare('SELECT statut, type FROM galerie WHERE id = :id');
+        $stmt->execute([':id' => $galerieId]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ?: null;
+    }
+
+    public function getCodeAcces(string $galerieId): ?string
+    {
+        $stmt = $this->pdo->prepare('SELECT code_acces FROM galerie_privee WHERE galerie_id = :id');
+        $stmt->execute([':id' => $galerieId]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ? $row['code_acces'] : null;
+    }
+
+    public function addCommentaire(string $galerieId, string $photoId, string $auteur, string $contenu): string
+    {
+        $id = Uuid::uuid4()->toString();
+        $stmt = $this->pdo->prepare(
+            'INSERT INTO photo_commentaire (id, galerie_id, photo_id, auteur, contenu, created_at)
+             VALUES (:id, :galerie_id, :photo_id, :auteur, :contenu, NOW())'
+        );
+        $stmt->execute([
+            ':id'        => $id,
+            ':galerie_id' => $galerieId,
+            ':photo_id'  => $photoId,
+            ':auteur'    => $auteur,
+            ':contenu'   => $contenu,
+        ]);
+        return $id;
+    }
 }
