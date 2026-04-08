@@ -141,6 +141,7 @@ services:
       - STOCKAGE_DB_NAME=stockage_db
       - STOCKAGE_DB_USER=photo_stockage
       - STOCKAGE_DB_PASSWORD=secret
+      - JWT_SECRET=photopro-secret-key-dev-2026-secure
     depends_on:
       - S3
       - stockage.db
