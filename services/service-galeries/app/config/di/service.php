@@ -6,6 +6,7 @@ use photopro\galeries\core\application\ports\services\StorageClientInterface;
 use photopro\galeries\infra\repositories\PdoRepositorieGalerie;
 use photopro\galeries\infra\repositories\PdoPhotoRepository;
 use photopro\galeries\infra\http\HttpStorageClient;
+use photopro\galeries\infra\http\HttpNotifieClient;
 
 
 return [
@@ -36,4 +37,9 @@ return [
         $storageUrl = $_ENV['STOCKAGE_URL'] ?? getenv('STOCKAGE_URL') ?? 'http://api.stockage:80';
         return new HttpStorageClient($storageUrl);
     },
+    HttpNotifieClient::class => static function ($c) {
+        $notifierUrl = $_ENV['NOTIFIER_URL'] ?? getenv('NOTIFIER_URL') ?? 'http://api.notifications:80';
+        return new HttpNotifieClient($notifierUrl);
+    }
+
 ];

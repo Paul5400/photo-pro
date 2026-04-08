@@ -19,6 +19,8 @@ use photopro\galeries\core\application\usecases\PreviewGalerieUseCase;
 use photopro\galeries\core\application\usecases\PublishGalerieUseCase;
 use photopro\galeries\core\application\usecases\UnpublishGalerieUseCase;
 use photopro\galeries\core\application\usecases\AjouterCommentaireUseCase;
+use photopro\galeries\infra\http\HttpNotifieClient;
+
 
 return [
     // actions
@@ -54,12 +56,15 @@ return [
     },
     PublishGalerieAction::class => function ($c) {
         return new PublishGalerieAction(
-            $c->get(GalerieRepositoryInterface::class)
+            $c->get(GalerieRepositoryInterface::class),
+            $c->get(HttpNotifieClient::class)
         );
     },
     UnpublishGalerieAction::class => function ($c) {
         return new UnpublishGalerieAction(
-            $c->get(GalerieRepositoryInterface::class)
+            $c->get(GalerieRepositoryInterface::class),
+             $c->get(HttpNotifieClient::class)
+
         );
     },
     AjouterCommentaireUseCase::class => function ($c) {
