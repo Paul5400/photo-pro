@@ -7,6 +7,17 @@ use photopro\galeries\core\application\ports\repositories\GalerieRepositoryInter
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * Action POST /galeries/{id}/unpublish
+ *
+ * Dépublie une galerie appartenant au photographe authentifié.
+ * Repasse la galerie en statut "brouillon" et efface la date de publication.
+ *
+ * Réponses :
+ *   200 - Galerie dépubliée avec succès
+ *   400 - Galerie non trouvée ou n'appartenant pas à l'utilisateur
+ *   401 - Token manquant ou invalide
+ */
 class UnpublishGalerieAction
 {
     use JwtDecoderTrait;

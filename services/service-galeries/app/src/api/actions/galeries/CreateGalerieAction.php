@@ -5,6 +5,28 @@ use photopro\galeries\core\application\ports\services\GalerieServiceInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+/**
+ * Action POST /galeries
+ *
+ * Crée une nouvelle galerie pour le photographe authentifié.
+ * L'identifiant du photographe est lu depuis l'attribut "user_id" positionné
+ * par AuthMiddleware (claim JWT "sub") ou, en fallback, l'en-tête X-User-Id.
+ *
+ * Corps JSON attendu :
+ *   - titre            (string, obligatoire)
+ *   - type             ("publique" | "privée")
+ *   - mode_mise_en_page("grille" | "mosaïque" | "carrousel")
+ *   - statut           ("brouillon" | "publie")
+ *   - description      (string, optionnel)
+ *   - photo_couverture_id (UUID, optionnel)
+ *   - nomClient / emailClient / telephoneClient (pour les galeries privées)
+ *
+ * Réponses :
+ *   201 - Galerie créée avec succès
+ *   400 - Corps JSON manquant ou photographe non identifié
+ *   422 - Données invalides (type / mode / statut non reconnu)
+ *   500 - Erreur serveur inattendue
+ */
 class CreateGalerieAction
 {
     private GalerieServiceInterface $galerieService;

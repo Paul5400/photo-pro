@@ -2,6 +2,17 @@
 namespace photopro\galeries\api\actions\galeries;
 use photopro\galeries\core\application\ports\services\GalerieServiceInterface;
 
+/**
+ * Action DELETE /galeries/{id}/photos/{photoId}
+ *
+ * Retire une photo d'une galerie (supprime l'association galerie_photo).
+ * Ne supprime pas la photo dans service-stockage/S3.
+ *
+ * Réponses :
+ *   200 - Photo retirée avec succès
+ *   400 - Identifiants manquants
+ *   500 - Erreur serveur
+ */
 class DeletePhotoFromGalerieAction
 {
     private GalerieServiceInterface $galerieService;
