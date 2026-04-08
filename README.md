@@ -8,6 +8,7 @@ cp infra/env/auth-db.env.dist infra/env/auth-db.env
 cp infra/env/gallery-db.env.dist infra/env/gallery-db.env
 cp infra/env/notifications-db.env.dist infra/env/notifications-db.env
 cp services/service-auth/app/config/.env.dist services/service-auth/app/config/.env
+cp services/service-stockage/.env.dist services/service-stockage/.env
 
 ```
   (Éditez les fichiers .env pour configurer les mots de passe)
