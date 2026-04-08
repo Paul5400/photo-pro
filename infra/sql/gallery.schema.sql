@@ -61,3 +61,17 @@ CREATE TABLE IF NOT EXISTS galerie_privee (
     CONSTRAINT uk_galerie_privee_url_acces  UNIQUE (url_acces)
 );
 
+-- =========================================================
+-- TABLE : photo_commentaire
+-- =========================================================
+CREATE TABLE IF NOT EXISTS photo_commentaire (
+    id          VARCHAR(36)  NOT NULL,
+    galerie_id  VARCHAR(36)  NOT NULL,
+    photo_id    VARCHAR(36)  NOT NULL,
+    auteur      VARCHAR(255) NOT NULL,
+    contenu     TEXT         NOT NULL,
+    created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT pk_photo_commentaire PRIMARY KEY (id)
+);
+

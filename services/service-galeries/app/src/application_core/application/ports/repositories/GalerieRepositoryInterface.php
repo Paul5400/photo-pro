@@ -46,4 +46,10 @@ interface GalerieRepositoryInterface
      * @return string L'UUID du commentaire créé
      */
     public function addCommentaire(string $galerieId, string $photoId, string $auteur, string $contenu): string;
+
+    /**
+     * Récupère tous les commentaires d'une photo dans une galerie donnée.
+     * @return array Tableau de commentaires
+     */
+    public function getCommentairesByPhoto(string $galerieId, string $photoId): array;
 }
