@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace photopro\backoffice\api\middleware;
@@ -13,7 +14,7 @@ class CorsMiddleware
     {
         $response = $handler->handle($request);
         return $response
-        // A CHANGER AVEC LE PORT DU BACKOFFICE
+            // A CHANGER AVEC LE PORT DU BACKOFFICE
             ->withHeader('Access-Control-Allow-Origin', '*')
             ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
             ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');

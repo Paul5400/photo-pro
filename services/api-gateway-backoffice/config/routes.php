@@ -36,6 +36,7 @@ return function (App $app) {
 
         // Photos
         $group->post('/photos[/]', ProxyAction::class);
+        $group->get('/photos/{id}/url[/]', ProxyAction::class);
 
         // Stockage
         $group->get('/stockage[/]', ProxyAction::class);

@@ -15,4 +15,6 @@ interface PhotoRepositoryInterface
     ): void;
 
     public function findCheminS3ById(string $id): ?string;
+
+    public function findByPhotographeId(string $photographeId): array;
 }

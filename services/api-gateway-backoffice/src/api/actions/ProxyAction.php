@@ -146,7 +146,10 @@ class ProxyAction
             return $this->container->get('auth.client');
         }
 
-        if (str_starts_with($path, '/stockage')) {
+        if (
+            str_starts_with($path, '/stockage')
+            || str_starts_with($path, '/photos')
+        ) {
             return $this->container->get('stockage.client');
         }
 
