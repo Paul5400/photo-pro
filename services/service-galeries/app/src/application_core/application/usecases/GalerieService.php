@@ -26,9 +26,10 @@ class GalerieService implements GalerieServiceInterface
      * Crée une galerie et, si elle est de type "privée",
      * génère le code d'accès client dans galerie_privee.
      */
-    public function createGalerie(GalerieDTO $galerieDTO): Galerie
+    public function createGalerie(GalerieDTO $galerieDTO): array
     {
         $galerie = $this->galerieRepository->create($galerieDTO);
+        $codeAcces = null;
 
         // Une galerie privée nécessite un accès sécurisé par code pour le client
         if ($galerieDTO->getType() === "privée") {
