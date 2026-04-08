@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Photo Pro API",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
