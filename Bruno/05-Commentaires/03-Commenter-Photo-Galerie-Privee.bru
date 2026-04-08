@@ -1,0 +1,28 @@
+meta {
+  name: 03 - Commenter Photo Galerie Privee
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{frontoffice}}/galeries/{{galerie_privee_id}}/photos/{{photo_id}}/commentaires
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "auteur": "Client Privé",
+    "contenu": "Photos magnifiques, merci !",
+    "code_acces": "{{code_acces}}"
+  }
+}
+
+tests {
+  test("Commentaire galerie privée retourne 201", function() {
+    expect(res.status).to.equal(201);
+  });
+  test("Réponse contient id du commentaire", function() {
+    expect(res.getBody()).to.have.property("id");
+  });
+}

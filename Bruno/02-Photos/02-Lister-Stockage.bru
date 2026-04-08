@@ -1,0 +1,27 @@
+meta {
+  name: 02 - Lister Stockage Photographe
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{backoffice}}/stockage
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+tests {
+  test("Lister stockage retourne 200", function() {
+    expect(res.status).to.equal(200);
+  });
+  test("Réponse contient photos", function() {
+    expect(res.getBody()).to.have.property("photos");
+  });
+  test("Photos est un tableau", function() {
+    expect(res.getBody().photos).to.be.an("array");
+  });
+}

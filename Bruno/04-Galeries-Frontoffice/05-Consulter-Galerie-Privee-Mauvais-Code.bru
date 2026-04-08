@@ -5,13 +5,13 @@ meta {
 }
 
 get {
-  url: {{frontoffice}}/galeries/{{galerie_privee_id}}
+  url: {{frontoffice}}/galeries/{{galerie_privee_id}}?code_acces=1254
   body: none
   auth: none
 }
 
 params:query {
-  code_acces: mauvais-code-invalide
+  code_acces: 1254
 }
 
 tests {

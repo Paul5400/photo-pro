@@ -1,0 +1,24 @@
+meta {
+  name: 02 - Commenter Photo Sans Auteur (400)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{frontoffice}}/galeries/{{galerie_id}}/photos/{{photo_id}}/commentaires
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "auteur": "",
+    "contenu": "Commentaire sans auteur"
+  }
+}
+
+tests {
+  test("Commentaire sans auteur retourne 400", function() {
+    expect(res.status).to.equal(400);
+  });
+}

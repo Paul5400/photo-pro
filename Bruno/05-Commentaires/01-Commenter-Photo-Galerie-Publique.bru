@@ -1,0 +1,36 @@
+meta {
+  name: 01 - Commenter Photo Galerie Publique
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{frontoffice}}/galeries/{{galerie_id}}/photos/{{photo_id}}/commentaires
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "auteur": "Jean Visiteur",
+    "contenu": "Très belle photo !"
+  }
+}
+
+script:post-response {
+  if (res.status === 201) {
+    const body = res.getBody();
+    if (body.id) {
+      bru.setEnvVar("commentaire_id", body.id);
+    }
+  }
+}
+
+tests {
+  test("Commentaire retourne 201", function() {
+    expect(res.status).to.equal(201);
+  });
+  test("Réponse contient id du commentaire", function() {
+    expect(res.getBody()).to.have.property("id");
+  });
+}
