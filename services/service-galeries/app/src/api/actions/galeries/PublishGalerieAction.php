@@ -4,6 +4,7 @@ namespace photopro\galeries\api\actions\galeries;
 
 use photopro\galeries\api\traits\JwtDecoderTrait;
 use photopro\galeries\core\application\ports\repositories\GalerieRepositoryInterface;
+use photopro\galeries\infra\messaging\RabbitMQEventPublisher;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -13,6 +14,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * Publie une galerie appartenant au photographe authentifié.
  * La galerie doit contenir au moins une photo, sinon l'opération est refusée.
  * Met à jour le statut à "publie" et enregistre la date de publication.
+ * Publie un événement RabbitMQ gallery.published pour notifier le client.
  *
  * Réponses :
  *   200 - Galerie publiée avec succès
@@ -23,7 +25,8 @@ class PublishGalerieAction
 {
     use JwtDecoderTrait;
     public function __construct(
-        private GalerieRepositoryInterface $galerieRepository
+        private GalerieRepositoryInterface $galerieRepository,
+        private RabbitMQEventPublisher $publisher,
     ) {}
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
@@ -42,6 +45,21 @@ class PublishGalerieAction
 
             $this->galerieRepository->publishGallery($galleryId, $userId);
 
+            $data = $this->galerieRepository->getGalerieDataForNotification($galleryId);
+            if ($data && !empty($data['email_client'])) {
+                try {
+                    $this->publisher->publish('gallery.published', [
+                        'galerie_id'    => $galleryId,
+                        'galerie_titre' => $data['titre'],
+                        'client_email'  => $data['email_client'] ?? '',
+                        'code_acces'    => $data['code_acces'] ?? '',
+                        'url_acces'     => $data['url_acces'] ?? '',
+                    ]);
+                } catch (\Throwable $e) {
+                    error_log('[PublishGalerieAction] RabbitMQ publish failed: ' . $e->getMessage());
+                }
+            }
+
             $response->getBody()->write(json_encode(['message' => 'Galerie publiée avec succès']));
             return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
 
@@ -50,5 +68,4 @@ class PublishGalerieAction
             return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
         }
     }
-
 }
