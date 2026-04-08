@@ -28,4 +28,28 @@ interface GalerieRepositoryInterface
      * Liste les galeries.
      */
     public function getGaleries(?string $photographeId): array;
+
+    /**
+     * Retourne le statut et le type d'une galerie.
+     * @return array{statut: string, type: string}|null null si non trouvée
+     */
+    public function getGalerieStatutEtType(string $galerieId): ?array;
+
+    /**
+     * Retourne le code d'accès d'une galerie privée.
+     * @return string|null null si aucun code trouvé
+     */
+    public function getCodeAcces(string $galerieId): ?string;
+
+    /**
+     * Insère un commentaire sur une photo d'une galerie.
+     * @return string L'UUID du commentaire créé
+     */
+    public function addCommentaire(string $galerieId, string $photoId, string $auteur, string $contenu): string;
+
+    /**
+     * Récupère tous les commentaires d'une photo dans une galerie donnée.
+     * @return array Tableau de commentaires
+     */
+    public function getCommentairesByPhoto(string $galerieId, string $photoId): array;
 }

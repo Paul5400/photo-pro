@@ -8,6 +8,7 @@ use photopro\galeries\api\actions\galeries\GetGalerieAction;
 use photopro\galeries\api\actions\galeries\PreviewGalerieAction;
 use photopro\galeries\api\actions\galeries\PublishGalerieAction;
 use photopro\galeries\api\actions\galeries\UnpublishGalerieAction;
+use photopro\galeries\api\actions\galeries\CommentaireAction;
 use photopro\galeries\api\actions\photos\UploadPhotoAction;
 use photopro\galeries\core\application\ports\repositories\GalerieRepositoryInterface;
 use photopro\galeries\core\application\ports\repositories\PhotoRepositoryInterface;
@@ -17,6 +18,7 @@ use photopro\galeries\core\application\usecases\GalerieService;
 use photopro\galeries\core\application\usecases\PreviewGalerieUseCase;
 use photopro\galeries\core\application\usecases\PublishGalerieUseCase;
 use photopro\galeries\core\application\usecases\UnpublishGalerieUseCase;
+use photopro\galeries\core\application\usecases\AjouterCommentaireUseCase;
 
 return [
     // actions
@@ -59,6 +61,12 @@ return [
         return new UnpublishGalerieAction(
             $c->get(GalerieRepositoryInterface::class)
         );
+    },
+    AjouterCommentaireUseCase::class => function ($c) {
+        return new AjouterCommentaireUseCase($c->get(GalerieRepositoryInterface::class));
+    },
+    CommentaireAction::class => function ($c) {
+        return new CommentaireAction($c->get(AjouterCommentaireUseCase::class));
     },
     // service
     GalerieServiceInterface::class => function ($c) {

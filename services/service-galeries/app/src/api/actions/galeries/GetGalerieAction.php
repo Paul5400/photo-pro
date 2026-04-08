@@ -7,6 +7,23 @@ use photopro\galeries\core\application\ports\services\StorageClientInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * Action GET /galeries/{id}
+ *
+ * Retourne le détail d'une galerie publiée avec ses photos (URLs pré-signées S3).
+ * Règles d'accès :
+ *   - Galerie non publiée (brouillon) → 404
+ *   - Galerie de type "privée" sans code_acces en query string → 401
+ *   - Galerie de type "privée" avec mauvais code_acces → 403
+ *   - Galerie publique publiée → 200 (pas de JWT requis)
+ *
+ * Réponses :
+ *   200 - Détail de la galerie + liste des photos
+ *   401 - Code d'accès manquant (galerie privée)
+ *   403 - Code d'accès invalide
+ *   404 - Galerie inexistante ou non publiée
+ *   500 - Erreur serveur
+ */
 class GetGalerieAction
 {
     public function __construct(
@@ -17,8 +34,9 @@ class GetGalerieAction
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
     {
         try {
-            $galleryId  = $args['id'];
+            $galleryId   = $args['id'];
             $queryParams = $request->getQueryParams();
+            // Code d'accès optionnel (requis uniquement pour les galeries privées)
             $codeAcces  = $queryParams['code_acces'] ?? null;
 
             $rows = $this->galerieRepository->getGalleryForVisitor($galleryId);
@@ -63,10 +81,15 @@ class GetGalerieAction
                     continue;
                 }
                 $url = $this->storageClient->getPresignedUrl($row['photo_id']);
+                
+                // Récupération des commentaires pour cette photo spécifique dans cette galerie
+                $commentaires = $this->galerieRepository->getCommentairesByPhoto($galleryId, $row['photo_id']);
+
                 $result['photos'][] = [
-                    'id'    => $row['photo_id'],
-                    'titre' => $row['photo_titre'],
-                    'url'   => $url,
+                    'id'           => $row['photo_id'],
+                    'titre'        => $row['photo_titre'],
+                    'url'          => $url,
+                    'commentaires' => $commentaires,
                 ];
             }
 

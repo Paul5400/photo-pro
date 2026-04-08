@@ -6,6 +6,18 @@ use photopro\galeries\core\application\ports\repositories\GalerieRepositoryInter
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * Action GET /galeries
+ *
+ * Retourne la liste des galeries.
+ * Deux comportements selon la présence de l'en-tête X-User-Id :
+ *   - Avec X-User-Id : toutes les galeries du photographe (brouillons inclus)
+ *   - Sans X-User-Id : uniquement les galeries publiées de type "publique"
+ *
+ * Réponses :
+ *   200 - Tableau de galeries (peut être vide)
+ *   500 - Erreur serveur
+ */
 class GetGaleriesAction
 {
     public function __construct(
@@ -15,6 +27,7 @@ class GetGaleriesAction
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         try {
+            // Si l'en-tête X-User-Id est présent, on filtre par photographe
             $userId = $request->getHeaderLine('X-User-Id') ?: null;
 
             $rows = $this->galerieRepository->getGaleries($userId);

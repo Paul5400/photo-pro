@@ -4,6 +4,18 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use InvalidArgumentException;
 
+/**
+ * Entité domaine représentant une galerie photo.
+ *
+ * Encapsule les règles métier sur les valeurs acceptées :
+ *   - type             : "publique" | "privée"
+ *   - mode_mise_en_page: "grille" | "mosaïque" | "carrousel"
+ *   - statut           : "brouillon" | "publie"
+ *
+ * Les méthodes statiques assertXxxIsValid() lèvent InvalidArgumentException
+ * si une valeur hors du référentiel est fournie (validé dès la construction
+ * et à chaque INSERT en base via PdoRepositorieGalerie).
+ */
 class Galerie implements \JsonSerializable
 {
     public const TYPE_PUBLIQUE = 'publique';
