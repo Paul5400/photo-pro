@@ -29,12 +29,19 @@ docker compose up -d
 ```powershell
 .\infra\seeder\run.ps1
 ```
-Cela upload 33 photos dans S3 et crée 6 galeries (publiques, privées, publiées, brouillon) pour l'utilisateur `mouadtaj@test.com` / `password123`.
+Cela upload 32 photos dans S3 et crée 5 galeries pour 3 photographes.
 
 > Les données persistent dans les volumes Docker. Il n'est pas nécessaire de relancer le seeder à chaque `docker compose up -d`.
 > Pour repartir de zéro : `docker compose down -v && docker compose up -d && .\infra\seeder\run.ps1`
 
 Pour Bruno il faut sur l'application Bruno importer une collection et choisir le dossier Bruno, ensuite il faut choisir l'environnement Local sur la collection photo pro sinon aucune routes ne fonctionnera
+### Comptes de test
+
+| Email | Mot de passe | Galeries |
+|---|---|---|
+| `mouadtaj@test.com` | `password123` | *Mariage Capucine & Pierre Mercier* (publique, publiée, 8 photos) · *Portraits - Nathalie Delattre* (privée, brouillon, code : `portrait-nathalie-2026`) |
+| `sophie.laurent@test.com` | `password123` | *Paysages d'Alsace - Automne 2026* (publique, publiée, 7 photos) · *Séance - Susanne Lamy* (privée, brouillon, code : `seance-susanne-2026`) |
+| `marc.dupont@test.com` | `password123` | *Architecture Strasbourg 2026* (publique, publiée, 6 photos) |
 
 ### Services disponibles
 - Gateway Front : http://localhost:8080
