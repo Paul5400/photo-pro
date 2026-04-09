@@ -34,6 +34,7 @@ Cela upload 32 photos dans S3 et crée 5 galeries pour 3 photographes.
 > Les données persistent dans les volumes Docker. Il n'est pas nécessaire de relancer le seeder à chaque `docker compose up -d`.
 > Pour repartir de zéro : `docker compose down -v && docker compose up -d && .\infra\seeder\run.ps1`
 
+Pour Bruno il faut sur l'application Bruno importer une collection et choisir le dossier Bruno, ensuite il faut choisir l'environnement Local sur la collection photo pro sinon aucune routes ne fonctionnera
 ### Comptes de test
 
 | Email | Mot de passe | Galeries |
